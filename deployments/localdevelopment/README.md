@@ -13,13 +13,14 @@ chmod +x yelb/deployments/localdevelopment/setupdevenv.sh
 yelb/deployments/localdevelopment/setupdevenv.sh
 ```
 
-You should now be able to see the application running by connecting your browser to: http://localhost:4200 
+You should now be able to see the application running by connecting your browser to: http://localhost:4200.
+
 The source code is in the `yelb` folder. 
 
-Note the yelb-ui angular instance and the yelb-appserver instance are started as background processes (use `ps` and `kill` as appropriate). The Redis server is started as a container. 
+The yelb-ui angular instance and the yelb-appserver instance are started as background processes (use `ps` and `kill` as appropriate). The Redis server is started as a container. 
 
-Also note that for the local development scenario the `RACK_ENV` variable is set to `development` and the `ng serve` command is explicitly started with the  `--environment=dev` flag.  
+For the local development scenario the `RACK_ENV` variable is set to `development` and the `ng serve` command is explicitly started with the  `--environment=dev` flag.  
 
-Also note that you can't really (easily) commit from here due to how the actual code is configured. This may be an area of optimization for the `dev` experience.
+Also note that you can't really (easily) commit from here due to how the actual code is configured and assembled in the local development scenario as-is. This may be an area of optimization for the `dev` experience.
 
 The start of the `yelb-ui` nginx and `yelb-appserver` Sinatra processes in background in the script provided is also another area of optimization. Easy to forget about them running in the background once done.   
