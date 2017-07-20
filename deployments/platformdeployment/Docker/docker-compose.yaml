@@ -1,0 +1,27 @@
+# use this with `docker-compose up` against a generic Docker end-point (e.g. standalone Docker, VIC)
+version: "2.1"
+services:
+  yelb-ui:
+    image: mreferre/yelb-ui
+    depends_on:
+      - yelb-appserver
+    ports:
+      - 80:80
+    networks:
+      - yelb-network
+
+  yelb-appserver:
+    image: mreferre/yelb-appserver
+    depends_on:
+      - redis-server
+    networks:
+      - yelb-network
+
+  redis-server:
+    image: redis
+    networks:
+      - yelb-network
+
+networks:
+  yelb-network:
+    driver: bridge # a user defined bridge is required; the default bridge network doesn't support name resolution   

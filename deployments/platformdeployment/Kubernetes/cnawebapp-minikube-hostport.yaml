@@ -1,0 +1,91 @@
+# Note: using hostPort is a very bad idea
+# A service for the yelb-ui container is not created because the app is being exposed on the node directly (which is bad)
+apiVersion: v1
+kind: Service
+metadata:
+  name: redis-server
+  labels:
+    app: redis-server
+    tier: backend
+spec:
+  type: ClusterIP
+  ports:
+  - port: 6379
+  selector:
+    app: redis-server
+    tier: backend
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: yelb-appserver
+  labels:
+    app: yelb-appserver
+    tier: middletier
+spec:
+  type: ClusterIP
+  ports:
+  - port: 4567
+  selector:
+    app: yelb-appserver
+    tier: middletier
+---
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: yelb-ui
+spec:
+  # with hostPort you can't have more than 1 replica because with minikube you only have 1 worker node
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: yelb-ui
+        tier: frontend
+    spec:
+      containers:
+      - name: yelb-ui
+        image: mreferre/yelb-ui
+        ports:
+        - containerPort: 80
+          hostPort: 32777 # depending on the minikube driver you use you may be able to even use 80. But something above 32000 seems safer 
+---
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: redis-server
+spec:
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: redis-server
+        tier: backend
+    spec:
+      containers:
+      - name: redis-server
+        image: redis
+        ports:
+        - containerPort: 6379
+---
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: yelb-appserver
+spec:
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: yelb-appserver
+        tier: middletier
+    spec:
+      containers:
+      - name: yelb-appserver
+        image: mreferre/yelb-appserver
+        ports:
+        - containerPort: 4567
+
+
+
+

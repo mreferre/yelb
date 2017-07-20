@@ -1,0 +1,39 @@
+# use this with `docker stack deploy --compose-file stack-deploy.yaml yelb` against a Docker (Swarm mode) cluster  
+version: "3"
+services:
+  yelb-ui:
+    image: mreferre/yelb-ui
+    depends_on:
+      - yelb-appserver
+    ports:
+      - 80:80
+    networks:
+      - yelb-network
+    deploy:
+      replicas: 1
+      restart_policy:
+        condition: on-failure
+
+  yelb-appserver:
+    image: mreferre/yelb-appserver
+    depends_on:
+      - redis-server
+    networks:
+      - yelb-network
+    deploy:
+      replicas: 1
+      restart_policy:
+        condition: on-failure
+
+  redis-server:
+    image: redis
+    networks:
+      - yelb-network
+    deploy:
+      replicas: 1
+      restart_policy:
+        condition: on-failure
+
+networks:
+  yelb-network:
+    driver: overlay # a user defined bridge is required; the default bridge network doesn't support name resolution   
