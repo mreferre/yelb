@@ -1,4 +1,5 @@
 FROM node:6.11
+MAINTAINER massimo@it20.info
 
 WORKDIR /
 
@@ -23,17 +24,19 @@ WORKDIR /clarity-seed/src
 
 RUN npm install  
 
-ENV UI_ENV prod 
-
 RUN ng build --environment=prod --output-path=./prod/dist/
 RUN ng build --environment=test --output-path=./test/dist/
 RUN ng build --environment=dev --output-path=./dev/dist/
 
 
 FROM nginx:1.11.5
+MAINTAINER massimo@it20.info
 
 WORKDIR /
 ADD startup.sh startup.sh
+
+ENV UI_ENV=prod 
+
 RUN chmod +x startup.sh
 
 COPY --from=0 /clarity-seed/src/prod/dist /clarity-seed/prod/dist
