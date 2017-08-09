@@ -29,6 +29,9 @@ services:
     image: redis
     networks:
       - yelb-network
+    # uncomment the following lines if you want to persist redis data across deployments
+    #volumes:
+    #  - data:/data
     deploy:
       replicas: 1
       restart_policy:
@@ -36,4 +39,9 @@ services:
 
 networks:
   yelb-network:
-    driver: overlay # a user defined bridge is required; the default bridge network doesn't support name resolution   
+    driver: overlay # a user defined bridge is required; the default bridge network doesn't support name resolution
+
+# uncomment the following lines if you want to persist redis data across deployments
+#volumes:
+#   data:
+#      driver: local # you can pick another driver depending on the platform you are deploying onto   
