@@ -2,7 +2,7 @@
 version: "3"
 services:
   yelb-ui:
-    image: mreferre/yelb-ui
+    image: mreferre/yelb-ui:0.2
     depends_on:
       - yelb-appserver
     ports:
@@ -15,9 +15,10 @@ services:
         condition: on-failure
 
   yelb-appserver:
-    image: mreferre/yelb-appserver
+    image: mreferre/yelb-appserver:0.2
     depends_on:
       - redis-server
+      - yelb-db
     networks:
       - yelb-network
     deploy:
@@ -26,12 +27,24 @@ services:
         condition: on-failure
 
   redis-server:
-    image: redis
+    image: redis:4.0.2
     networks:
       - yelb-network
     # uncomment the following lines if you want to persist redis data across deployments
     #volumes:
-    #  - data:/data
+    #  - redisdata:/data
+    deploy:
+      replicas: 1
+      restart_policy:
+        condition: on-failure
+
+  yelb-db:
+    image: mreferre/yelb-db:0.2
+    networks:
+      - yelb-network
+    # uncomment the following lines if you want to persist postgres data across deployments
+    #volumes:
+    #  - postgresqldata:/var/lib/postgresql/data
     deploy:
       replicas: 1
       restart_policy:
@@ -41,7 +54,10 @@ networks:
   yelb-network:
     driver: overlay # a user defined bridge is required; the default bridge network doesn't support name resolution
 
-# uncomment the following lines if you want to persist redis data across deployments
+# uncomment the following lines if you want to persist redis/postgres data across deployments
 #volumes:
-#   data:
+#   redisdata:
 #      driver: local # you can pick another driver depending on the platform you are deploying onto   
+#   postgresqldata:
+#      driver: local # you can pick another driver depending on the platform you are deploying onto
+

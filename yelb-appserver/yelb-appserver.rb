@@ -12,6 +12,7 @@
 require 'redis'
 require 'socket'
 require 'sinatra'
+require 'pg'
 
 # the disabled protection is required when running in production behind an nginx reverse proxy
 # without this option, the angular application will spit a `forbidden` error message
@@ -19,16 +20,22 @@ disable :protection
 
 # the system variable RACK_ENV controls which environment you are enabling 
 configure :production do
-  set :redis, "redis-server"
+  set :redishost, "redis-server"
   set :port, 4567
+  set :yelbdbhost => "yelb-db"
+  set :yelbdbport => 5432
 end
 configure :test do
-  set :redis, "redis-server"
+  set :redishost, "redis-server"
   set :port, 4567
+  set :yelbdbhost => "yelb-db"
+  set :yelbdbport => 5432
 end
 configure :development do
-  set :redis, "localhost"
+  set :redishost, "localhost"
   set :port, 4567
+  set :yelbdbhost => "localhost"
+  set :yelbdbport => 5432
 end
 
 options "*" do
@@ -40,6 +47,27 @@ options "*" do
   halt HTTP_STATUS_OK
 end
 
+def restaurantsdbread(restaurant)
+    con = PG.connect  :host => settings.yelbdbhost,
+                      :port => settings.yelbdbport,
+                      :dbname => 'yelbdatabase',
+                      :user => 'postgres',
+                      :password => 'postgres_password'
+    con.prepare('statement1', 'SELECT count FROM restaurants WHERE name =  $1')
+    res = con.exec_prepared('statement1', [ restaurant ])
+    return res.getvalue(0,0)
+end 
+
+def restaurantsdbupdate(restaurant)
+    con = PG.connect  :host => settings.yelbdbhost,
+                      :port => settings.yelbdbport,
+                      :dbname => 'yelbdatabase',
+                      :user => 'postgres',
+                      :password => 'postgres_password'
+    con.prepare('statement1', 'UPDATE restaurants SET count = count +1 WHERE name = $1')
+    res = con.exec_prepared('statement1', [ restaurant ])
+end 
+
 get '/api/pageviews' do
 
     headers 'Access-Control-Allow-Origin' => '*'
@@ -48,7 +76,7 @@ get '/api/pageviews' do
 
 	content_type 'application/json'
     redis = Redis.new
-    redis = Redis.new(:host => settings.redis, :port => 6379)
+    redis = Redis.new(:host => settings.redishost, :port => 6379)
     redis.incr("pageviews")
     @pageviews = redis.get("pageviews")
 end #get /api/pageviews
@@ -71,7 +99,7 @@ get '/api/getstats' do
 
 	content_type 'application/json'
     redis = Redis.new
-    redis = Redis.new(:host => settings.redis, :port => 6379)
+    redis = Redis.new(:host => settings.redishost, :port => 6379)
     redis.incr("pageviews")
     @hostname = Socket.gethostname
     @pageviews = redis.get("pageviews")
@@ -83,18 +111,12 @@ get '/api/getvotes' do
     headers 'Access-Control-Allow-Origin' => '*'
     headers 'Access-Control-Allow-Headers' => 'Authorization,Accepts,Content-Type,X-CSRF-Token,X-Requested-With'
     headers 'Access-Control-Allow-Methods' => 'GET,POST,PUT,DELETE,OPTIONS'
-
-	content_type 'application/json'
-    redis = Redis.new
-    redis = Redis.new(:host => settings.redis, :port => 6379)
-    @outback = redis.get("outback")
-    @ihop = redis.get("ihop")
-    @bucadibeppo = redis.get("bucadibeppo")
-    @chipotle = redis.get("chipotle")
-    @ihop = "0" if @ihop.nil?
-    @chipotle = "0" if @chipotle.nil?
-    @outback = "0" if @outback.nil?
-    @bucadibeppo = "0" if @bucadibeppo.nil?
+    
+    content_type 'application/json'
+    @outback = restaurantsdbread("outback")
+    @ihop = restaurantsdbread("ihop")
+    @bucadibeppo = restaurantsdbread("bucadibeppo")
+    @chipotle = restaurantsdbread("chipotle")
     @votes = '[{"name": "outback", "value": ' + @outback + '},' + '{"name": "bucadibeppo", "value": ' + @bucadibeppo + '},' + '{"name": "ihop", "value": '  + @ihop + '}, ' + '{"name": "chipotle", "value": '  + @chipotle + '}]'
 end #get /api/getvotes 
 
@@ -103,11 +125,8 @@ get '/api/ihop' do
     headers 'Access-Control-Allow-Headers' => 'Authorization,Accepts,Content-Type,X-CSRF-Token,X-Requested-With'
     headers 'Access-Control-Allow-Methods' => 'GET,POST,PUT,DELETE,OPTIONS'
  
-    content_type 'application/json'
-    redis = Redis.new
-    redis = Redis.new(:host => settings.redis, :port => 6379)
-    redis.incr("ihop")
-    @ihop = redis.get("ihop")
+    restaurantsdbupdate("ihop")
+    @ihop = restaurantsdbread("ihop")
 end #get /api/ihop 
 
 get '/api/chipotle' do
@@ -115,11 +134,8 @@ get '/api/chipotle' do
     headers 'Access-Control-Allow-Headers' => 'Authorization,Accepts,Content-Type,X-CSRF-Token,X-Requested-With'
     headers 'Access-Control-Allow-Methods' => 'GET,POST,PUT,DELETE,OPTIONS'
  
-    content_type 'application/json'
-    redis = Redis.new
-    redis = Redis.new(:host => settings.redis, :port => 6379)
-    redis.incr("chipotle")
-    @ihop = redis.get("chipotle")
+    restaurantsdbupdate("chipotle")
+    @chipotle = restaurantsdbread("chipotle")
 end #get /api/chipotle 
 
 get '/api/outback' do
@@ -127,11 +143,8 @@ get '/api/outback' do
     headers 'Access-Control-Allow-Headers' => 'Authorization,Accepts,Content-Type,X-CSRF-Token,X-Requested-With'
     headers 'Access-Control-Allow-Methods' => 'GET,POST,PUT,DELETE,OPTIONS'
  
-    content_type 'application/json'
-    redis = Redis.new
-    redis = Redis.new(:host => settings.redis, :port => 6379)
-    redis.incr("outback")
-    @ihop = redis.get("outback")
+    restaurantsdbupdate("outback")
+    @outback = restaurantsdbread("outback")
 end #get /api/outback 
 
 get '/api/bucadibeppo' do
@@ -139,10 +152,7 @@ get '/api/bucadibeppo' do
     headers 'Access-Control-Allow-Headers' => 'Authorization,Accepts,Content-Type,X-CSRF-Token,X-Requested-With'
     headers 'Access-Control-Allow-Methods' => 'GET,POST,PUT,DELETE,OPTIONS'
  
-    content_type 'application/json'
-    redis = Redis.new
-    redis = Redis.new(:host => settings.redis, :port => 6379)
-    redis.incr("bucadibeppo")
-    @ihop = redis.get("bucadibeppo")
+    restaurantsdbupdate("bucadibeppo")
+    @bucadibeppo = restaurantsdbread("bucadibeppo")
 end #get /api/bucadibeppo 
 
