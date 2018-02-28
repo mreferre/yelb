@@ -1,3 +1,4 @@
+# This should work on an out of the box minikube setup
 # Note: using hostPort is a very bad idea
 # A service for the yelb-ui container is not created because the app is being exposed on the node directly (which is bad)
 apiVersion: v1

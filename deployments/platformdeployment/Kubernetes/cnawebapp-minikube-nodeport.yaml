@@ -1,4 +1,4 @@
-# Node: this should work on an out of the box minikube setup 
+# This should work on an out of the box minikube setup 
 apiVersion: v1
 kind: Service
 metadata:
