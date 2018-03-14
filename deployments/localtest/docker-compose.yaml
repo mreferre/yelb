@@ -2,7 +2,7 @@
 version: "2.1"
 services:
   yelb-ui:
-    image: mreferre/yelb-ui:0.2
+    image: mreferre/yelb-ui:0.3
     depends_on:
       - yelb-appserver
     ports:
@@ -11,7 +11,7 @@ services:
       - UI_ENV=test # dev | test | prod 
 
   yelb-appserver:
-    image: mreferre/yelb-appserver:0.2
+    image: mreferre/yelb-appserver:0.3
     depends_on:
       - redis-server
       - yelb-db
@@ -26,6 +26,6 @@ services:
       - 6379:6379
 
   yelb-db:
-    image: mreferre/yelb-db:0.2
+    image: mreferre/yelb-db:0.3
     ports:
       - 5432:5432

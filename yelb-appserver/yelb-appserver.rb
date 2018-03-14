@@ -18,7 +18,8 @@ require 'pg'
 # without this option, the angular application will spit a `forbidden` error message
 disable :protection
 
-# the system variable RACK_ENV controls which environment you are enabling 
+# the system variable RACK_ENV controls which environment you are enabling
+# if you choose 'custom' with RACK_ENV, all systems variables in the section need to be set before launching the yelb-appserver application
 configure :production do
   set :redishost, "redis-server"
   set :port, 4567
@@ -35,6 +36,12 @@ configure :development do
   set :redishost, "localhost"
   set :port, 4567
   set :yelbdbhost => "localhost"
+  set :yelbdbport => 5432
+end
+configure :custom do
+  set :redishost, ENV['REDIS_SERVER_ENDPOINT']
+  set :port, 4567
+  set :yelbdbhost => ENV['YELB_DB_SERVER_ENDPOINT']
   set :yelbdbport => 5432
 end
 
@@ -69,7 +76,6 @@ def restaurantsdbupdate(restaurant)
 end 
 
 get '/api/pageviews' do
-
     headers 'Access-Control-Allow-Origin' => '*'
     headers 'Access-Control-Allow-Headers' => 'Authorization,Accepts,Content-Type,X-CSRF-Token,X-Requested-With'
     headers 'Access-Control-Allow-Methods' => 'GET,POST,PUT,DELETE,OPTIONS'
@@ -82,7 +88,6 @@ get '/api/pageviews' do
 end #get /api/pageviews
 
 get '/api/hostname' do
-
     headers 'Access-Control-Allow-Origin' => '*'
     headers 'Access-Control-Allow-Headers' => 'Authorization,Accepts,Content-Type,X-CSRF-Token,X-Requested-With'
     headers 'Access-Control-Allow-Methods' => 'GET,POST,PUT,DELETE,OPTIONS'
@@ -92,7 +97,6 @@ get '/api/hostname' do
 end #get /api/hostname
 
 get '/api/getstats' do
-
     headers 'Access-Control-Allow-Origin' => '*'
     headers 'Access-Control-Allow-Headers' => 'Authorization,Accepts,Content-Type,X-CSRF-Token,X-Requested-With'
     headers 'Access-Control-Allow-Methods' => 'GET,POST,PUT,DELETE,OPTIONS'
@@ -155,4 +159,3 @@ get '/api/bucadibeppo' do
     restaurantsdbupdate("bucadibeppo")
     @bucadibeppo = restaurantsdbread("bucadibeppo")
 end #get /api/bucadibeppo 
-

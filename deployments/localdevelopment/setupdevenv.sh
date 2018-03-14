@@ -4,7 +4,7 @@
 # workstation requirements: git, Docker, Ruby (with proper libraries/gems), angular@CLI 
 
 docker run --name redis -p 6379:6379 -d redis:4.0.2
-docker run --name postgres -p 5432:5432 -d mreferre/yelb-db:0.2
+docker run --name postgres -p 5432:5432 -d mreferre/yelb-db:0.3
 
 cd ./yelb/yelb-appserver
 export RACK_ENV=development 
@@ -24,7 +24,7 @@ cp ../clarity-seed-newfiles/src/styles.css src/styles.css
 cp ../clarity-seed-newfiles/src/app/app* src/app
 cp ../clarity-seed-newfiles/src/environments/env* src/environments
 cp ../clarity-seed-newfiles/package.json package.json
-cp ../clarity-seed-newfiles/angular-cli.json angular-cli.json
+cp ../clarity-seed-newfiles/angular-cli.json .angular-cli.json
 rm -r src/app/home
 rm -r src/app/about
 
