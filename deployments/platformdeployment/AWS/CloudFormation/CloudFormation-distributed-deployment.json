@@ -48,7 +48,7 @@
         "UserData" : {"Fn::Base64" : { "Fn::Join" : ["",[
                         "#!/bin/bash -ex","\n",
                         "\n",
-                        "curl https://gist.githubusercontent.com/mreferre/46613d0e89af8527130ba5008ed18974/raw/yelb-redis.sh | bash"]]}
+                        "curl https://raw.githubusercontent.com/mreferre/yelb/master/deployments/platformdeployment/Linux/yelb-redis.sh | bash"]]}
                      }
       }
     },
@@ -65,7 +65,7 @@
         "UserData" : {"Fn::Base64" : { "Fn::Join" : ["",[
                         "#!/bin/bash -ex","\n",
                         "\n",
-                        "curl https://gist.githubusercontent.com/mreferre/2001b99ed163103bf4c90aee87be1c7b/raw/yelb-db.sh | bash"]]}
+                        "curl https://raw.githubusercontent.com/mreferre/yelb/master/deployments/platformdeployment/Linux/yelb-db.sh | bash"]]}
                      }
       }
     },
@@ -84,7 +84,7 @@
                         "\n",
                         "export REDIS_SERVER_ENDPOINT=",{ "Fn::GetAtt" : [ "RedisCache", "PrivateDnsName" ] },"\n",
                         "export YELB_DB_SERVER_ENDPOINT=",{ "Fn::GetAtt" : [ "YelbDb", "PrivateDnsName" ] },"\n",
-                        "curl https://gist.githubusercontent.com/mreferre/27c85452ea264f25ed1f63952d3cf61b/raw/yelb-appserver.sh | bash"]]}
+                        "curl https://raw.githubusercontent.com/mreferre/yelb/master/deployments/platformdeployment/Linux/yelb-appserver.sh | bash"]]}
                      }
       },
     "DependsOn" : [ "YelbDb", "RedisCache" ]  
@@ -104,7 +104,7 @@
                         "#!/bin/bash -ex","\n",
                         "\n",
                         "export YELB_APPSERVER_ENDPOINT=",{ "Fn::GetAtt" : [ "YelbAppserver", "PublicDnsName" ] },"\n",
-                        "curl https://gist.githubusercontent.com/mreferre/09d298c53d28d99c4924c405425b4b8b/raw/yelb-ui.sh | bash"]]}
+                        "curl https://raw.githubusercontent.com/mreferre/yelb/master/deployments/platformdeployment/Linux/yelb-ui.sh | bash"]]}
                      }
       },
       "DependsOn" : "YelbAppserver"
