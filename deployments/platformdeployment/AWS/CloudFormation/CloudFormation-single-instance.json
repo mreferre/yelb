@@ -48,7 +48,7 @@
         "UserData" : {"Fn::Base64" : { "Fn::Join" : ["",[
                         "#!/bin/bash -ex","\n",
                         "\n",
-                        "curl https://raw.githubusercontent.com/mreferre/yelb/master/deployments/platformdeployment/Linux/yelb-redis.sh | bash","\n",
+                        "curl https://raw.githubusercontent.com/mreferre/yelb/master/deployments/platformdeployment/Linux/redis-server.sh | bash","\n",
                         "curl https://raw.githubusercontent.com/mreferre/yelb/master/deployments/platformdeployment/Linux/yelb-db.sh | bash","\n",
                         "curl https://raw.githubusercontent.com/mreferre/yelb/master/deployments/platformdeployment/Linux/yelb-appserver.sh | bash","\n",
                         "export YELB_APPSERVER_ENDPOINT=$(curl http://169.254.169.254/latest/meta-data/public-hostname)","\n",

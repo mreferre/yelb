@@ -48,7 +48,7 @@
         "UserData" : {"Fn::Base64" : { "Fn::Join" : ["",[
                         "#!/bin/bash -ex","\n",
                         "\n",
-                        "curl https://raw.githubusercontent.com/mreferre/yelb/master/deployments/platformdeployment/Linux/yelb-redis.sh | bash"]]}
+                        "curl https://raw.githubusercontent.com/mreferre/yelb/master/deployments/platformdeployment/Linux/redis-server.sh | bash"]]}
                      }
       }
     },
