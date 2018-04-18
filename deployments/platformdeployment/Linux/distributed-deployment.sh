@@ -1,6 +1,6 @@
-# this series of scripts deploys the yelb application across 4 different and separate cloud instances
-# please make sure you set the proper variables included in each script
-# each instance should have the proper ports open to allow the communication flow 
+# These scripts deploy the yelb application across 4 different and separate cloud instances.
+# Please make sure you set the proper variables included in each script. This is how each service will find the others (where applicable).
+# Each instance should have the proper ports open to allow the communication flow (see main README for hints on ports)
 
 
 # Run this script on the redis-server instance:
