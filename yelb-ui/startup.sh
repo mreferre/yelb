@@ -8,7 +8,7 @@ sed -i -- 's#/usr/share/nginx/html#/clarity-seed/'$UI_ENV'/dist#g' $NGINX_CONF
 # everything that hits /api is proxied to the app server     
 if ! grep -q "location /api" "$NGINX_CONF"; then
 	echo "    location /api {" > /proxycfg.txt
-	echo "        proxy_pass http://yelb-appserver:4567/api;" >> /proxycfg.txt
+	echo "        proxy_pass http://${APP_SERVER_HOSTNAME:-yelb-appserver}:4567/api;" >> /proxycfg.txt
 	# echo "        proxy_set_header Host $host;" >> /proxycfg.tx
 	echo "    }" >> /proxycfg.txt
 	sed --in-place '/server_name  localhost;/ r /proxycfg.txt' $NGINX_CONF
