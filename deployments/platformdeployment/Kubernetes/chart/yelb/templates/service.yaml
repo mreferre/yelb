@@ -1,0 +1,76 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ template "yelb.fullname" . }}-ui
+  labels:
+    app: {{ template "yelb.fullname" . }}
+    tier: frontend
+    chart: {{ template "yelb.chart" . }}
+    release: {{ .Release.Name }}
+    heritage: {{ .Release.Service }}
+spec:
+  type: {{ .Values.service.type }}
+  ports:
+  - port: {{ .Values.service.port }}
+    protocol: TCP
+    targetPort: 80
+    name: http
+  selector:
+    app: {{ template "yelb.fullname" . }}
+    tier: frontend
+    release: {{ .Release.Name }}
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ template "yelb.fullname" . }}-redis-server
+  labels:
+    app: {{ template "yelb.fullname" . }}
+    tier: cache
+    chart: {{ template "yelb.chart" . }}
+    release: {{ .Release.Name }}
+    heritage: {{ .Release.Service }}
+spec:
+  type: ClusterIP
+  ports:
+  - port: 6379
+  selector:
+    app: {{ template "yelb.fullname" . }}
+    tier: cache
+    release: {{ .Release.Name }}
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ template "yelb.fullname" . }}-db
+  labels:
+    app: {{ template "yelb.fullname" . }}
+    tier: backenddb
+    release: {{ .Release.Name }}
+    chart: {{ template "yelb.chart" . }}
+spec:
+  type: ClusterIP
+  ports:
+  - port: 5432
+  selector:
+    app: {{ template "yelb.fullname" . }}
+    tier: backenddb
+    release: {{ .Release.Name }}
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ template "yelb.fullname" . }}-appserver
+  labels:
+    app: {{ template "yelb.fullname" . }}
+    tier: middletier
+    release: {{ .Release.Name }}
+    chart: {{ template "yelb.chart" . }}
+spec:
+  type: ClusterIP
+  ports:
+  - port: 4567
+  selector:
+    app: {{ template "yelb.fullname" . }}
+    tier: middletier
+    release: {{ .Release.Name }}
