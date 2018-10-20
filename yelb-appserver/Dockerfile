@@ -20,8 +20,12 @@ RUN apt-get install libpq-dev -y
 ### end of hack (this would require additional research and optimization)
 RUN gem install pg --no-ri --no-rdoc
 
+# Set the working directory to /
+WORKDIR /
+ADD startup.sh startup.sh
+
 ##################### INSTALLATION END #####################
 
-CMD /bin/sh -c "ruby yelb-appserver.rb -o 0.0.0.0"
+CMD ["./startup.sh"]
 
 
