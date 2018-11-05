@@ -1,0 +1,91 @@
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: {{ template "yelb.fullname" . }}-ui
+spec:
+  replicas: {{ .Values.replicaCount }}
+  template:
+    metadata:
+      labels:
+        app: {{ template "yelb.fullname" . }}
+        tier: frontend
+        release: {{ .Release.Name }}
+        chart: {{ template "yelb.chart" . }}
+    spec:
+      containers:
+      - name: yelb-ui
+        image:  nomisbeme/yelb-ui:0.3
+        ports:
+        - containerPort: 80
+        env:
+        - name: "APP_SERVER_HOSTNAME"
+          value: {{ template "yelb.fullname" . }}-appserver
+---
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: {{ template "yelb.fullname" . }}-cache
+spec:
+  replicas: {{ .Values.replicaCount }}
+  template:
+    metadata:
+      labels:
+        app: {{ template "yelb.fullname" . }}
+        tier: cache
+        release: {{ .Release.Name }}
+        chart: {{ template "yelb.chart" . }}
+    spec:
+      containers:
+      - name: redis-server
+        image: redis:4.0.2
+        ports:
+        - containerPort: 6379
+---
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: {{ template "yelb.fullname" . }}-db
+spec:
+  replicas: {{ .Values.replicaCount }}
+  template:
+    metadata:
+      labels:
+        app: {{ template "yelb.fullname" . }}
+        tier: backenddb
+        release: {{ .Release.Name }}
+        chart: {{ template "yelb.chart" . }}
+    spec:
+      containers:
+      - name: {{ template "yelb.fullname" . }}-db
+        image:  mreferre/yelb-db:0.3
+        ports:
+        - containerPort: 5432
+---
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: {{ template "yelb.fullname" . }}-appserver
+spec:
+  replicas: {{ .Values.replicaCount }}
+  template:
+    metadata:
+      labels:
+        app: {{ template "yelb.fullname" . }}
+        tier: middletier
+        release: {{ .Release.Name }}
+        chart: {{ template "yelb.chart" . }}
+    spec:
+      containers:
+      - name: {{ template "yelb.fullname" . }}-appserver
+        image:  mreferre/yelb-appserver:0.3
+        ports:
+        - containerPort: 4567
+        env:
+        - name: "RACK_ENV"
+          value: "custom"
+        - name: "APP_SERVER_HOSTNAME"
+          value: {{ template "yelb.fullname" . }}-appserver
+        - name: "REDIS_SERVER_ENDPOINT"
+          value: {{ template "yelb.fullname" . }}-redis-server
+        - name: "YELB_DB_SERVER_ENDPOINT"
+          value: {{ template "yelb.fullname" . }}-db
