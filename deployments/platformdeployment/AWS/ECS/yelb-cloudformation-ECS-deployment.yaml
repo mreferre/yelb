@@ -1,0 +1,412 @@
+"Description" : "Yelb on ECS: Create a Yelb stack using Elastic Container Service. This requires public subnets"
+
+Parameters: 
+
+    VPC:
+        Description: The VPC that the ECS cluster is deployed to
+        Type: AWS::EC2::VPC::Id
+ 
+    PublicSubnetOne:
+        Type: AWS::EC2::Subnet::Id
+        Description: First Public Subnet
+
+    PublicSubnetTwo:
+        Type: AWS::EC2::Subnet::Id
+        Description: Second Public Subnet
+
+    Cluster:
+        Description: Please provide the ECS Cluster ID that this service should run on
+        Type: String
+        Default: "Default"
+
+    Domain:
+        Description: An arbitrary internal domain name for the application (only required for internal service discovery - default is yelb.local) 
+        Type: String
+        Default: "yelb.local"
+
+    CountOfUiTasks:
+        Description: The number of tasks to be instantiated for the UI service  
+        Type: Number
+        Default: 1
+
+    CountOfAppserverTasks:
+        Description: The number of tasks to be instantiated for the Application service  
+        Type: Number
+        Default: 1
+
+    LaunchType:
+        Description: Please provide the LaunchType
+        Type: String
+        Default: FARGATE
+        AllowedValues:
+               - EC2
+               - FARGATE
+
+    PublicIP:
+        Description: Please provide the LaunchType
+        Type: String
+        Default: ENABLED
+        AllowedValues:
+               - ENABLED
+               - DISABLED
+
+
+Resources:
+
+    ServiceYelbDb: 
+        Type: AWS::ECS::Service
+        Properties: 
+            ServiceName: yelb-db
+            LaunchType: !Ref LaunchType
+            Cluster: !Ref Cluster
+            DesiredCount: 1
+            ServiceRegistries:
+                - RegistryArn: !GetAtt YelbDbServiceDiscoveryEntry.Arn
+            TaskDefinition: !Ref 'TaskDefinitionYelbDb'
+            NetworkConfiguration:
+                AwsvpcConfiguration:
+                    AssignPublicIp: !Ref PublicIP
+                    Subnets: [ !Ref 'PublicSubnetOne' , !Ref 'PublicSubnetTwo' ]
+                    SecurityGroups: [!Ref 'YelbDbSecurityGroup' ]
+
+    TaskDefinitionYelbDb:
+        Type: AWS::ECS::TaskDefinition
+        Properties:
+            Family: yelb-db
+            NetworkMode: awsvpc
+            RequiresCompatibilities:
+                - FARGATE
+            ExecutionRoleArn: !Ref 'YelbECSTaskExecutionRole'
+            Cpu: 256
+            Memory: 512
+            ContainerDefinitions:
+                - Name: yelb-db
+                  Essential: true
+                  Image: mreferre/yelb-db:0.3
+                  LogConfiguration:
+                    LogDriver: awslogs
+                    Options:
+                        awslogs-group: !Ref AWS::StackName
+                        awslogs-region: !Ref AWS::Region
+                        awslogs-stream-prefix: "yelb"
+
+    ServiceRedisServer: 
+        Type: AWS::ECS::Service
+        Properties: 
+            ServiceName: redis-server
+            LaunchType: !Ref LaunchType
+            Cluster: !Ref Cluster
+            DesiredCount: 1
+            ServiceRegistries:
+                - RegistryArn: !GetAtt YelbRedisServerServiceDiscoveryEntry.Arn
+            TaskDefinition: !Ref 'TaskDefinitionRedisServer'
+            NetworkConfiguration:
+                AwsvpcConfiguration:
+                    AssignPublicIp: !Ref PublicIP
+                    Subnets: [ !Ref 'PublicSubnetOne' , !Ref 'PublicSubnetTwo'  ]
+                    SecurityGroups: [!Ref 'YelbRedisServerSecurityGroup' ]
+
+    TaskDefinitionRedisServer:
+        Type: AWS::ECS::TaskDefinition
+        Properties:
+            Family: redis-server
+            NetworkMode: awsvpc
+            RequiresCompatibilities:
+                - FARGATE
+            ExecutionRoleArn: !Ref 'YelbECSTaskExecutionRole'
+            Cpu: 256
+            Memory: 512
+            ContainerDefinitions:
+                - Name: redis-server
+                  Essential: true
+                  Image: redis:4.0.2
+                  LogConfiguration:
+                    LogDriver: awslogs
+                    Options:
+                        awslogs-group: !Ref AWS::StackName
+                        awslogs-region: !Ref AWS::Region
+                        awslogs-stream-prefix: "yelb"
+
+    ServiceYelbAppserver: 
+        Type: AWS::ECS::Service
+        Properties: 
+            ServiceName: yelb-appserver
+            LaunchType: !Ref LaunchType
+            Cluster: !Ref Cluster
+            DesiredCount: !Ref CountOfAppserverTasks
+            ServiceRegistries:
+                - RegistryArn: !GetAtt YelbAppserverServiceDiscoveryEntry.Arn
+            TaskDefinition: !Ref 'TaskDefinitionYelbAppserver'
+            NetworkConfiguration:
+                AwsvpcConfiguration:
+                    AssignPublicIp: !Ref PublicIP
+                    Subnets: [ !Ref 'PublicSubnetOne' , !Ref 'PublicSubnetTwo'  ]
+                    SecurityGroups: [!Ref 'YelbAppserverSecurityGroup' ]
+
+    TaskDefinitionYelbAppserver:
+        Type: AWS::ECS::TaskDefinition
+        Properties:
+            Family: yelb-appserver
+            NetworkMode: awsvpc
+            RequiresCompatibilities:
+                - FARGATE
+            ExecutionRoleArn: !Ref 'YelbECSTaskExecutionRole'
+            Cpu: 256
+            Memory: 512
+            ContainerDefinitions:
+                - Name: yelb-appserver
+                  Essential: true
+                  Image: mreferre/yelb-appserver:0.4
+                  Environment: 
+                    - Name: SEARCH_DOMAIN
+                      Value: !Ref 'Domain' 
+                  LogConfiguration:
+                    LogDriver: awslogs
+                    Options:
+                        awslogs-group: !Ref AWS::StackName
+                        awslogs-region: !Ref AWS::Region
+                        awslogs-stream-prefix: "yelb"
+
+    ServiceYelbUi: 
+        Type: AWS::ECS::Service
+        DependsOn: YelbLoadBalancerListener
+        Properties: 
+            ServiceName: yelb-ui
+            LaunchType: !Ref LaunchType
+            Cluster: !Ref Cluster
+            DesiredCount: !Ref CountOfUiTasks
+            ServiceRegistries:
+                - RegistryArn: !GetAtt YelbUiServiceDiscoveryEntry.Arn
+            TaskDefinition: !Ref 'TaskDefinitionYelbUi'
+            LoadBalancers:
+                - ContainerName: 'yelb-ui'
+                  ContainerPort: 80
+                  TargetGroupArn: !Ref YelbTargetGroup
+            NetworkConfiguration:
+                AwsvpcConfiguration:
+                    AssignPublicIp: !Ref PublicIP
+                    Subnets: [ !Ref 'PublicSubnetOne' , !Ref 'PublicSubnetTwo'  ]
+                    SecurityGroups: [!Ref 'YelbUiSecurityGroup' ]
+
+    TaskDefinitionYelbUi:
+        Type: AWS::ECS::TaskDefinition
+        Properties:
+            Family: yelb-ui
+            NetworkMode: awsvpc
+            RequiresCompatibilities:
+                - FARGATE
+            ExecutionRoleArn: !Ref 'YelbECSTaskExecutionRole'
+            Cpu: 256
+            Memory: 512
+            ContainerDefinitions:
+                - Name: yelb-ui
+                  Essential: true
+                  Image: mreferre/yelb-ui:0.4
+                  Environment: 
+                    - Name: SEARCH_DOMAIN
+                      Value: !Ref 'Domain' 
+                  PortMappings:
+                    - ContainerPort: 80
+                  LogConfiguration:
+                    LogDriver: awslogs
+                    Options:
+                        awslogs-group: !Ref AWS::StackName
+                        awslogs-region: !Ref AWS::Region
+                        awslogs-stream-prefix: "yelb"
+
+    CloudWatchLogsGroup:
+        Type: AWS::Logs::LogGroup
+        Properties: 
+            LogGroupName: !Ref AWS::StackName
+            RetentionInDays: 365  
+   
+    # This is a role which is used by the ECS tasks themselves.
+    YelbECSTaskExecutionRole:
+        Type: AWS::IAM::Role
+        Properties:
+            AssumeRolePolicyDocument:
+                Statement:
+                - Effect: Allow
+                  Principal:
+                     Service: [ecs-tasks.amazonaws.com]
+                  Action: ['sts:AssumeRole']
+            Path: /
+            Policies:
+                - PolicyName: AmazonECSTaskExecutionRolePolicy
+                  PolicyDocument:
+                    Statement:
+                        - Effect: Allow
+                          Action:
+                            # Allow the ECS Tasks to download images from ECR
+                            - 'ecr:GetAuthorizationToken'
+                            - 'ecr:BatchCheckLayerAvailability'
+                            - 'ecr:GetDownloadUrlForLayer'
+                            - 'ecr:BatchGetImage'
+
+                            # Allow the ECS tasks to upload logs to CloudWatch
+                            - 'logs:CreateLogStream'
+                            - 'logs:PutLogEvents'
+
+                            # Allow the ECS tasks to register into the target group
+                            - 'elasticloadbalancing:DeregisterInstancesFromLoadBalancer'
+                            - 'elasticloadbalancing:Describe*'
+                            - 'elasticloadbalancing:RegisterInstancesWithLoadBalancer'
+                            - 'elasticloadbalancing:DeregisterTargets'
+                            - 'elasticloadbalancing:DescribeTargetGroups'
+                            - 'elasticloadbalancing:DescribeTargetHealth'
+                            - 'elasticloadbalancing:RegisterTargets'
+                          Resource: '*'
+
+    YelbServiceDiscoveryNameSpace:
+        Type: AWS::ServiceDiscovery::PrivateDnsNamespace
+        Properties:
+            Description: "Service Discovery Namespace for Yelb"
+            Vpc: !Ref 'VPC'
+            Name: !Ref 'Domain'
+
+    YelbDbServiceDiscoveryEntry:
+        Type: AWS::ServiceDiscovery::Service
+        Properties:
+            Name: yelb-db
+            DnsConfig:
+                DnsRecords: 
+                    - Type: A
+                      TTL: "10"
+                NamespaceId: !Ref 'YelbServiceDiscoveryNameSpace'
+            HealthCheckCustomConfig:
+                FailureThreshold: '1'
+
+    YelbRedisServerServiceDiscoveryEntry:
+        Type: AWS::ServiceDiscovery::Service
+        Properties:
+            Name: redis-server
+            DnsConfig:
+                DnsRecords: 
+                    - Type: A
+                      TTL: "10"
+                NamespaceId: !Ref 'YelbServiceDiscoveryNameSpace'
+            HealthCheckCustomConfig:
+                FailureThreshold: '1'
+
+    YelbAppserverServiceDiscoveryEntry:
+        Type: AWS::ServiceDiscovery::Service
+        Properties:
+            Name: yelb-appserver
+            DnsConfig:
+                DnsRecords: 
+                    - Type: A
+                      TTL: "10"
+                NamespaceId: !Ref 'YelbServiceDiscoveryNameSpace'
+            HealthCheckCustomConfig:
+                FailureThreshold: '1'
+
+    YelbUiServiceDiscoveryEntry:
+        Type: AWS::ServiceDiscovery::Service
+        Properties:
+            Name: yelb-ui
+            DnsConfig:
+                DnsRecords: 
+                    - Type: A
+                      TTL: "10"
+                NamespaceId: !Ref 'YelbServiceDiscoveryNameSpace'
+            HealthCheckCustomConfig:
+                FailureThreshold: '1'
+
+    YelbDbSecurityGroup:
+        Type: AWS::EC2::SecurityGroup
+        Properties:
+            GroupDescription: yealb-db security group
+            SecurityGroupIngress:
+            - SourceSecurityGroupId: !Ref YelbAppserverSecurityGroup
+              IpProtocol: tcp
+              ToPort: 5432
+              FromPort: 5432
+            VpcId: !Ref 'VPC'
+
+
+    YelbRedisServerSecurityGroup:
+        Type: AWS::EC2::SecurityGroup
+        Properties:
+            GroupDescription: redis-server security group
+            SecurityGroupIngress:
+            - SourceSecurityGroupId: !Ref YelbAppserverSecurityGroup
+              IpProtocol: tcp
+              ToPort: 6379
+              FromPort: 6379
+            VpcId: !Ref 'VPC'
+
+    YelbAppserverSecurityGroup:
+        Type: AWS::EC2::SecurityGroup
+        Properties:
+            GroupDescription: yealb-appserver security group
+            SecurityGroupIngress:
+            - CidrIp: '0.0.0.0/0'
+              IpProtocol: tcp
+              ToPort: 4567
+              FromPort: 4567
+            VpcId: !Ref 'VPC'
+
+    YelbUiSecurityGroup:
+        Type: AWS::EC2::SecurityGroup
+        Properties:
+            GroupDescription: yealb-ui security group
+            SecurityGroupIngress:
+            - CidrIp: '0.0.0.0/0'
+              IpProtocol: tcp
+              ToPort: 80
+              FromPort: 80
+            VpcId: !Ref 'VPC'
+
+    YelbLBSecurityGroup:
+        Type: AWS::EC2::SecurityGroup
+        Properties:
+            GroupDescription: yealb load balancer security group
+            SecurityGroupIngress:
+            - CidrIp: '0.0.0.0/0'
+              IpProtocol: tcp
+              ToPort: 80
+              FromPort: 80
+            VpcId: !Ref 'VPC'
+
+    YelbLoadBalancer:
+      Type: AWS::ElasticLoadBalancingV2::LoadBalancer
+      Properties:
+        Scheme: internet-facing
+        Subnets: [ !Ref 'PublicSubnetOne' , !Ref 'PublicSubnetTwo' ]
+        SecurityGroups: [ !Ref YelbLBSecurityGroup ]
+
+    YelbLoadBalancerListener:
+      Type: AWS::ElasticLoadBalancingV2::Listener
+      Properties:
+        LoadBalancerArn: !Ref YelbLoadBalancer
+        Port: 80
+        Protocol: HTTP
+        DefaultActions:
+          - Type: forward
+            TargetGroupArn: !Ref YelbTargetGroup
+
+    YelbTargetGroup:
+      Type: AWS::ElasticLoadBalancingV2::TargetGroup
+      Properties:
+        HealthCheckIntervalSeconds: 6
+        HealthCheckPath: /
+        HealthCheckProtocol: HTTP
+        HealthCheckTimeoutSeconds: 5
+        HealthyThresholdCount: 2
+        Name: yelb-ui
+        TargetType: ip 
+        VpcId: !Ref VPC
+        Port: 80
+        Protocol: HTTP
+
+Outputs:
+
+    LoadBalancerUrl:
+        Description: The URL of the ALB
+        Value: !GetAtt YelbLoadBalancer.DNSName
+
+
+
+
+
+
