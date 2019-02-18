@@ -1,3 +1,6 @@
+require 'pg'
+require 'pg_ext'
+
 def restaurantsdbupdate(restaurant)
     con = PG.connect  :host => $yelbdbhost,
                       :port => $yelbdbport,

@@ -1,7 +1,7 @@
 require_relative 'restaurantsdbread'
 require_relative 'restaurantsdbupdate'
 
-def getVotes()
+def getvotes()
         outback = restaurantsdbread("outback")
         ihop = restaurantsdbread("ihop")
         bucadibeppo = restaurantsdbread("bucadibeppo")
