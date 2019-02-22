@@ -10,8 +10,9 @@
 #################################################################################
 
 require 'sinatra'
+require 'aws-sdk-dynamodb' 
 require_relative 'modules/pageviews'
-require_relative 'modules/getVotes'
+require_relative 'modules/getvotes'
 require_relative 'modules/restaurant'
 require_relative 'modules/hostname'
 require_relative 'modules/getstats'
@@ -47,6 +48,10 @@ configure :custom do
   set :port, 4567
   set :yelbdbhost => ENV['YELB_DB_SERVER_ENDPOINT']
   set :yelbdbport => 5432
+  set :yelbddbrestaurants => ENV['YELB_DDB_RESTAURANTS']
+  set :yelbddbcache => ENV['YELB_DDB_CACHE']
+  set :awsregion => ENV['AWS_REGION']
+  
 end
 
 options "*" do
@@ -57,6 +62,12 @@ options "*" do
 
   halt HTTP_STATUS_OK
 end
+
+$yelbdbhost = settings.yelbdbhost
+$redishost = settings.redishost
+$yelbddbcache = settings.yelbddbcache
+$yelbddbrestaurants = settings.yelbddbrestaurants
+$awsregion = settings.awsregion
 
 get '/api/pageviews' do
     headers 'Access-Control-Allow-Origin' => '*'
@@ -87,7 +98,7 @@ get '/api/getvotes' do
     headers 'Access-Control-Allow-Headers' => 'Authorization,Accepts,Content-Type,X-CSRF-Token,X-Requested-With'
     headers 'Access-Control-Allow-Methods' => 'GET,POST,PUT,DELETE,OPTIONS'
     content_type 'application/json'
-    @votes = getVotes()
+    @votes = getvotes()
 end #get /api/getvotes 
 
 get '/api/ihop' do
