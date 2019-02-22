@@ -9,7 +9,7 @@ def restaurant_adapter(event:, context:)
     # use the return JSON command when you want the API Gateway to manage the http communication  
     # return JSON.parse(restaurancount)
     { statusCode: 200,
-        body: restaurancount,
+        body: restaurantcount,
         headers: {
           'content_type': 'application/json',
           'Access-Control-Allow-Origin': '*',
@@ -17,5 +17,4 @@ def restaurant_adapter(event:, context:)
           'Access-Control-Allow-Methods': 'GET,POST,PUT,DELETE,OPTIONS'
         }
     }
-
 end
