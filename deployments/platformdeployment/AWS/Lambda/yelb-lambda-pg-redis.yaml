@@ -1,0 +1,235 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Transform: AWS::Serverless-2016-10-31
+Description: 'Yelb on Lambda: Create a Yelb stack using Lambda for the application
+  layer and Postgres/Redis for the backend. This template only works in us-west-2 
+  (due to the Lambdas downloading their code from a bucket there). This has been tested
+  on the default VPC with Public Subnets.'
+Globals:
+  Function:
+    Timeout: 3
+Parameters:
+  KeyName:
+    Description: Name of an existing EC2 KeyPair to enable SSH access to the instance
+      (where applicable)
+    Type: AWS::EC2::KeyPair::KeyName
+    ConstraintDescription: Can contain only ASCII characters.
+  InstanceType:
+    Description: Yelb EC2 instance type (where applicable)
+    Type: String
+    Default: t2.small
+    AllowedValues:
+    - t2.small
+    - t2.medium
+    - m5.large
+    ConstraintDescription: Must be a valid EC2 instance type
+Mappings:
+  AWSInstanceType2Arch:
+    t2.small:
+      Arch: HVMG2
+    t2.medium:
+      Arch: HVMG2
+    m5.large:
+      Arch: HVMG2
+  AWSRegionArch2AMI:
+    us-east-1:
+      HVMG2: ami-1853ac65
+    us-west-1:
+      HVMG2: ami-bf5540df    
+    us-west-2:
+      HVMG2: ami-d874e0a0
+    eu-west-1:
+      HVMG2: ami-3bfab942
+    eu-central-1:
+      HVMG2: ami-ac442ac3
+    ap-southeast-2:
+      HVMG2: ami-43874721
+Resources:
+  RedisCache:
+    Type: AWS::EC2::Instance
+    Properties:
+      ImageId:
+        Fn::FindInMap:
+        - AWSRegionArch2AMI
+        - Ref: AWS::Region
+        - Fn::FindInMap:
+          - AWSInstanceType2Arch
+          - Ref: InstanceType
+          - Arch
+      InstanceType:
+        Ref: InstanceType
+      SecurityGroups:
+      - Ref: YelbSecurityGroupRedisCache
+      KeyName:
+        Ref: KeyName
+      Tags:
+      - Key: Name
+        Value: redis-cache
+      UserData:
+        Fn::Base64:
+          Fn::Join:
+          - ''
+          - - "#!/bin/bash -ex"
+            - "\n"
+            - "\n"
+            - curl https://raw.githubusercontent.com/mreferre/yelb/master/deployments/platformdeployment/Linux/redis-server.sh
+              | bash
+  YelbDb:
+    Type: AWS::EC2::Instance
+    Properties:
+      ImageId:
+        Fn::FindInMap:
+        - AWSRegionArch2AMI
+        - Ref: AWS::Region
+        - Fn::FindInMap:
+          - AWSInstanceType2Arch
+          - Ref: InstanceType
+          - Arch
+      InstanceType:
+        Ref: InstanceType
+      SecurityGroups:
+      - Ref: YelbSecurityGroupYelbDb
+      KeyName:
+        Ref: KeyName
+      Tags:
+      - Key: Name
+        Value: yelb-db
+      UserData:
+        Fn::Base64:
+          Fn::Join:
+          - ''
+          - - "#!/bin/bash -ex"
+            - "\n"
+            - "\n"
+            - curl https://raw.githubusercontent.com/mreferre/yelb/master/deployments/platformdeployment/Linux/yelb-db.sh
+              | bash
+  YelbSecurityGroupRedisCache:
+    Type: AWS::EC2::SecurityGroup
+    Properties:
+      GroupDescription: Enable Redis access from inside the VPC and SSH access from
+        the Internet
+      SecurityGroupIngress:
+      - IpProtocol: tcp
+        FromPort: '6379'
+        ToPort: '6379'
+        CidrIp: 0.0.0.0/0
+  YelbSecurityGroupYelbDb:
+    Type: AWS::EC2::SecurityGroup
+    Properties:
+      GroupDescription: Enable Postgres access from inside the VPC and SSH access
+        from the Internet
+      SecurityGroupIngress:
+      - IpProtocol: tcp
+        FromPort: '5432'
+        ToPort: '5432'
+        CidrIp: 0.0.0.0/0
+
+  YelbApi:
+    Type: AWS::Serverless::Api
+    Properties:
+      StageName: api
+
+  getvotesLambda:
+    Type: AWS::Serverless::Function
+    Properties:
+      CodeUri: s3://yelb-appserver-serverless/yelb-appserver-serverless.zip
+      Handler: getvotes_adapter.getvotes_adapter
+      Runtime: ruby2.5
+      Environment:
+        Variables:
+          yelbdbhost:
+            Fn::GetAtt:
+            - YelbDb
+            - PublicDnsName
+      Events:
+        getVotes:
+          Type: Api
+          Properties:
+            Path: "/getvotes"
+            Method: get
+            RestApiId:
+              Ref: YelbApi
+
+  getstatsLambda:
+    Type: AWS::Serverless::Function
+    Properties:
+      CodeUri: s3://yelb-appserver-serverless/yelb-appserver-serverless.zip
+      Handler: getstats_adapter.getstats_adapter
+      Runtime: ruby2.5
+      Environment:
+        Variables:
+          redishost:
+            Fn::GetAtt:
+            - RedisCache
+            - PublicDnsName
+      Events:
+        getstats:
+          Type: Api
+          Properties:
+            Path: "/getstats"
+            Method: get
+            RestApiId:
+              Ref: YelbApi
+
+  hostnameLambda:
+    Type: AWS::Serverless::Function
+    Properties:
+      CodeUri: s3://yelb-appserver-serverless/yelb-appserver-serverless.zip
+      Handler: hostname_adapter.hostname_adapter
+      Runtime: ruby2.5
+      Environment:
+        Variables:
+          yelbdbhost:
+            Fn::GetAtt:
+            - YelbDb
+            - PublicDnsName
+      Events:
+        hostname:
+          Type: Api
+          Properties:
+            Path: "/hostname"
+            Method: get
+            RestApiId:
+              Ref: YelbApi
+
+  pageviewsLambda:
+    Type: AWS::Serverless::Function
+    Properties:
+      CodeUri: s3://yelb-appserver-serverless/yelb-appserver-serverless.zip
+      Handler: pageviews_adapter.pageviews_adapter
+      Runtime: ruby2.5
+      Environment:
+        Variables:
+          redishost:
+            Fn::GetAtt:
+            - RedisCache
+            - PublicDnsName
+          port: "6379"
+      Events:
+        pageviews:
+          Type: Api
+          Properties:
+            Path: "/pageviews"
+            Method: get
+            RestApiId:
+              Ref: YelbApi
+
+  restaurantLambda:
+    Type: AWS::Serverless::Function
+    Properties:
+      CodeUri: s3://yelb-appserver-serverless/yelb-appserver-serverless.zip
+      Handler: restaurant_adapter.restaurant_adapter
+      Runtime: ruby2.5
+      Environment:
+        Variables:
+          yelbdbhost:
+            Fn::GetAtt:
+            - YelbDb
+            - PublicDnsName
+      Events:
+        restaurants:
+          Type: Api
+          Properties:
+            Path: "/{restaurant+}"
+            Method: get
+            RestApiId:
+              Ref: YelbApi

@@ -1,0 +1,313 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Transform: AWS::Serverless-2016-10-31
+Description: 'Yelb on Lambda and DynamoDB: Create a Yelb stack using Lambda for the application
+  layer and DynamoDB tables for the backend. This template only works in us-west-2 
+  (due to the Lambdas downloading their code from a bucket there).'
+
+Globals:
+  Function:
+    Timeout: 3
+
+Resources:
+
+  yelbddbrestaurants: 
+    Type: AWS::DynamoDB::Table
+    Properties: 
+      AttributeDefinitions: 
+      - AttributeName: "name"
+        AttributeType: "S"
+      KeySchema: 
+      - AttributeName: "name"
+        KeyType: "HASH"          
+      BillingMode: PAY_PER_REQUEST
+
+  yelbddbcache: 
+    Type: AWS::DynamoDB::Table
+    Properties: 
+      AttributeDefinitions: 
+      - AttributeName: "counter"
+        AttributeType: "S"
+      KeySchema: 
+      - AttributeName: "counter"
+        KeyType: "HASH"
+      BillingMode: PAY_PER_REQUEST
+        
+  DDBLambdaRole:
+    Type: AWS::IAM::Role
+    Properties:
+      AssumeRolePolicyDocument:
+        Version: '2012-10-17'
+        Statement:
+        - Effect: Allow
+          Principal:
+            Service:
+            - lambda.amazonaws.com
+          Action:
+          - sts:AssumeRole
+      Path: "/"
+      Policies:
+        - PolicyName: YelbdynamodbAccessRole
+          PolicyDocument:
+            Version: '2012-10-17'
+            Statement:
+            - Effect: Allow
+              Action:
+              - dynamodb:*
+              Resource: 
+              - Fn::Sub: arn:aws:dynamodb:${AWS::Region}:${AWS::AccountId}:table/${yelbddbrestaurants}
+            - Effect: Allow
+              Action:
+              - dynamodb:*
+              Resource: 
+              - Fn::Sub: arn:aws:dynamodb:${AWS::Region}:${AWS::AccountId}:table/${yelbddbcache}
+            - Effect: Allow
+              Action:
+              - logs:*
+              Resource: "*"
+  
+  YelbDDBInitFunctionRestaurants:
+    Type: AWS::Lambda::Function
+    Properties:
+      Code:
+        ZipFile: >
+          const AWS = require("aws-sdk");
+          const response = require("cfn-response");
+          const docClient = new AWS.DynamoDB.DocumentClient();
+          exports.handler = function(event, context) {
+              console.log(JSON.stringify(event,null,2));
+              var params = {
+                TableName: event.ResourceProperties.DynamoTableName,
+                Item:{
+                    "name": "bucadibeppo",
+                    "restaurantcount": 0
+                }
+              };
+              docClient.put(params, function(err, data) { 
+                  if (err) {
+                    response.send(event, context, "FAILED", {});
+                  } 
+                  else {
+                    response.send(event, context, "SUCCESS", {});
+                  }
+              });
+              var params = {
+                TableName: event.ResourceProperties.DynamoTableName,
+                Item:{
+                    "name": "outback",
+                    "restaurantcount": 0
+                }
+              };
+              docClient.put(params, function(err, data) { 
+                  if (err) {
+                    response.send(event, context, "FAILED", {});
+                  } 
+                  else {
+                    response.send(event, context, "SUCCESS", {});
+                  }
+              });
+              var params = {
+                TableName: event.ResourceProperties.DynamoTableName,
+                Item:{
+                    "name": "ihop",
+                    "restaurantcount": 0
+                }
+              };
+              docClient.put(params, function(err, data) { 
+                  if (err) {
+                    response.send(event, context, "FAILED", {});
+                  } 
+                  else {
+                    response.send(event, context, "SUCCESS", {});
+                  }
+              });
+              var params = {
+                TableName: event.ResourceProperties.DynamoTableName,
+                Item:{
+                    "name": "chipotle",
+                    "restaurantcount": 0
+                }
+              };
+              docClient.put(params, function(err, data) { 
+                  if (err) {
+                    response.send(event, context, "FAILED", {});
+                  } 
+                  else {
+                    response.send(event, context, "SUCCESS", {});
+                  }
+              });
+          };
+      Handler: index.handler
+      Role:
+        Fn::GetAtt: [ DDBLambdaRole , "Arn" ]
+      Runtime: nodejs8.10
+      Timeout: 60
+
+  YelbDDBInitFunctionCache:
+    Type: AWS::Lambda::Function
+    Properties:
+      Code:
+        ZipFile: >
+          const AWS = require("aws-sdk");
+          const response = require("cfn-response");
+          const docClient = new AWS.DynamoDB.DocumentClient();
+          exports.handler = function(event, context) {
+              console.log(JSON.stringify(event,null,2));
+              var params = {
+                TableName: event.ResourceProperties.DynamoTableName,
+                Item:{
+                    "counter": "pageviews",
+                    "pageviewscount": 0
+                }
+              };
+              docClient.put(params, function(err, data) { 
+                  if (err) {
+                    response.send(event, context, "FAILED", {});
+                  } 
+                  else {
+                    response.send(event, context, "SUCCESS", {});
+                  }
+              });
+          };
+      Handler: index.handler
+      Role:
+        Fn::GetAtt: [ DDBLambdaRole , "Arn" ]
+      Runtime: nodejs8.10
+      Timeout: 60
+      
+  InitializeDynamoDBRestaurants:
+    Type: Custom::InitFunction
+    DependsOn: yelbddbrestaurants
+    Properties:
+      ServiceToken:
+        Fn::GetAtt: [ YelbDDBInitFunctionRestaurants , "Arn" ]
+      DynamoTableName:
+        Ref: yelbddbrestaurants
+
+  InitializeDynamoDBCache:
+    Type: Custom::InitFunction
+    DependsOn: yelbddbcache
+    Properties:
+      ServiceToken:
+        Fn::GetAtt: [ YelbDDBInitFunctionCache , "Arn" ]
+      DynamoTableName:
+        Ref: yelbddbcache
+
+  YelbApi:
+    Type: AWS::Serverless::Api
+    Properties:
+      StageName: api
+
+  getvotesLambda:
+    Type: AWS::Serverless::Function
+    DependsOn: yelbddbrestaurants
+    Properties:
+      CodeUri: s3://yelb-appserver-serverless/yelb-appserver-serverless.zip
+      Handler: getvotes_adapter.getvotes_adapter
+      Runtime: ruby2.5
+      Role: !GetAtt DDBLambdaRole.Arn
+      Environment:
+        Variables:
+          yelbddbrestaurants: 
+            Ref: yelbddbrestaurants
+          awsregion: 
+            Ref: AWS::Region
+      Events:
+        getVotes:
+          Type: Api
+          Properties:
+            Path: "/getvotes"
+            Method: get
+            RestApiId:
+              Ref: YelbApi
+
+  getstatsLambda:
+    Type: AWS::Serverless::Function
+    DependsOn: yelbddbcache
+    Properties:
+      CodeUri: s3://yelb-appserver-serverless/yelb-appserver-serverless.zip
+      Handler: getstats_adapter.getstats_adapter
+      Runtime: ruby2.5
+      Role: !GetAtt DDBLambdaRole.Arn
+      Environment:
+        Variables:
+          yelbddbcache: 
+            Ref: yelbddbcache
+          awsregion: 
+            Ref: AWS::Region
+      Events:
+        getstats:
+          Type: Api
+          Properties:
+            Path: "/getstats"
+            Method: get
+            RestApiId:
+              Ref: YelbApi
+
+  hostnameLambda:
+    Type: AWS::Serverless::Function
+    DependsOn: yelbddbrestaurants
+    Properties:
+      CodeUri: s3://yelb-appserver-serverless/yelb-appserver-serverless.zip
+      Handler: hostname_adapter.hostname_adapter
+      Runtime: ruby2.5
+      Role: !GetAtt DDBLambdaRole.Arn
+      Environment:
+        Variables:
+          yelbddbrestaurant:
+            Ref: yelbddbrestaurants
+          awsregion: 
+            Ref: AWS::Region
+      Events:
+        hostname:
+          Type: Api
+          Properties:
+            Path: "/hostname"
+            Method: get
+            RestApiId:
+              Ref: YelbApi
+
+  pageviewsLambda:
+    Type: AWS::Serverless::Function
+    DependsOn: yelbddbcache
+    Properties:
+      CodeUri: s3://yelb-appserver-serverless/yelb-appserver-serverless.zip
+      Handler: pageviews_adapter.pageviews_adapter
+      Runtime: ruby2.5
+      Role: !GetAtt DDBLambdaRole.Arn
+      Environment:
+        Variables:
+          yelbddbcache:
+            Ref: yelbddbcache
+          awsregion: 
+            Ref: AWS::Region
+      Events:
+        pageviews:
+          Type: Api
+          Properties:
+            Path: "/pageviews"
+            Method: get
+            RestApiId:
+              Ref: YelbApi
+
+  restaurantLambda:
+    Type: AWS::Serverless::Function
+    DependsOn: yelbddbrestaurants
+    Properties:
+      CodeUri: s3://yelb-appserver-serverless/yelb-appserver-serverless.zip
+      Handler: restaurant_adapter.restaurant_adapter
+      Runtime: ruby2.5
+      Role: !GetAtt DDBLambdaRole.Arn
+      Environment:
+        Variables:
+          yelbddbrestaurants:
+            Ref: yelbddbrestaurants
+          awsregion: 
+            Ref: AWS::Region
+      Events:
+        restaurants:
+          Type: Api
+          Properties:
+            Path: "/{restaurant+}"
+            Method: get
+            RestApiId:
+              Ref: YelbApi
