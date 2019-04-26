@@ -4,7 +4,7 @@
 
 # Creating the CF stack
 # This CF template deploys prepares the DDB table and deploys the Lambdas w/ the API GW
-aws cloudformation create-stack --template-body file://./yelb-lambda-ddb.yaml --capabilities CAPABILITY_IAM CAPABILITY_AUTO_EXPAND --stack-name yelb-serverless --region us-west-2
+aws cloudformation create-stack --template-body file://./yelb-lambda-ddb.yaml --capabilities CAPABILITY_IAM CAPABILITY_AUTO_EXPAND --stack-name yelb-lambda-ddb --region us-west-2
 
 # Waiting for the CF stack to come on line
 aws cloudformation wait stack-create-complete --region us-west-2 --stack-name yelb-lambda-ddb 

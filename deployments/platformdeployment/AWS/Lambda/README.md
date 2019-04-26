@@ -1,4 +1,4 @@
-The code in this directory includes *experimental* support for running the Yelb application "serverless". 
+The code in this directory includes *experimental* support for running the Yelb application "serverless". Note that the script only works for the Oregon region (`us-west-2`) mostly because the bucket the Lambda functions grab the zip from is located there (and Lambda only supports grabbing the code from the same region).  
 
 The `deploy-yelb-lambda-ddb.sh` script brings to life a stack that is comprised of the Yelb appserver (turned into discrete Lambda functions fronted by an API Gateway) as well as the back end persistency layer (turned into two separate DybamoDB tables). 
 
@@ -6,7 +6,9 @@ This required a small refactor of the Yelb appserver code. First I decoupled the
 
 In addition to this support for DynamoDB has been added to the business logic. Now when the appserver code is started passing the variables `yelbddbrestaurants` and `yelbddbcache` the code will persist data to the two DDB tables (instead of the Postgres DB and the Redis server). 
 
-The script runs a CF template (`deploy-yelb-lambda-ddb.yaml`) that stands up the tables, the Lambdas and the API Gateway. In addition to this the script also sources and tweaks the Yelb UI (hosted on an S3 public bucket) and eventually packaged as an S3 Web Hosting configuration.   
+The script runs a CF template (`deploy-yelb-lambda-ddb.yaml`) that stands up the tables, the Lambdas and the API Gateway. In addition to this the script also sources and tweaks the Yelb UI (hosted on an S3 public bucket) and eventually packaged as an S3 Web Hosting configuration.
+
+Ideally (and ambitionally), this script should be turned into a single CDK template that does all of this. 
 
 The artifact for the Lambdas is available here: `s3://yelb-appserver-serverless/yelb-appserver-serverless.zip`.
 The artifact for the S3 site is available here: `s3://yelb-ui-serverless`.
