@@ -43,14 +43,14 @@ Parameters:
                - FARGATE
 
     PublicIP:
-        Description: Please provide the LaunchType
+        Description: Please provide IP connectivity option
         Type: String
         Default: ENABLED
         AllowedValues:
                - ENABLED
                - DISABLED
 
-
+               
 Resources:
 
     ServiceYelbDb: 
