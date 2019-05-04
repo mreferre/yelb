@@ -13,7 +13,9 @@ RUN git checkout -b f3250ee26ceb847f61bb167a90dc957edf6e7f43
 
 RUN cp /clarity-seed-newfiles/src/index.html /clarity-seed/src/index.html
 RUN cp /clarity-seed-newfiles/src/styles.css /clarity-seed/src/styles.css
+RUN cp /clarity-seed-newfiles/src/env.js /clarity-seed/src/env.js
 RUN cp /clarity-seed-newfiles/src/app/app* /clarity-seed/src/app
+RUN cp /clarity-seed-newfiles/src/app/env* /clarity-seed/src/app
 RUN cp /clarity-seed-newfiles/src/environments/env* /clarity-seed/src/environments
 RUN cp /clarity-seed-newfiles/package.json /clarity-seed/package.json
 RUN cp /clarity-seed-newfiles/angular-cli.json /clarity-seed/.angular-cli.json
