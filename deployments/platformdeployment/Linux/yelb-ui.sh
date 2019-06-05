@@ -47,12 +47,13 @@ export NVM_DIR="$HOME/.nvm"
 [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"  # This loads nvm
 [ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"  # This loads nvm bash_completion
 . ~/.nvm/nvm.sh
-nvm install 8.11
+nvm install 10.9
 export NVM_DIR="$HOME/.nvm"
 [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"  # This loads nvm
 [ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"  # This loads nvm bash_completion
 . ~/.nvm/nvm.sh
-npm install -g @angular/cli
+# the echo here after has been introduced due to a new prompt for enabling / disabling Google analytics
+echo N | npm install -g @angular/cli
 
 cd $HOMEDIR
 cd yelb/yelb-ui
