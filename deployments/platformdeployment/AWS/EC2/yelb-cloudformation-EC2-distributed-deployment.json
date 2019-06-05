@@ -28,6 +28,7 @@
     "AWSRegionArch2AMI" : {
       "us-east-1"      : { "HVMG2" : "ami-1853ac65"  },
       "us-west-1"      : { "HVMG2" : "ami-bf5540df"  },
+      "us-west-2"      : { "HVMG2" : "ami-d874e0a0"  },
       "eu-west-1"      : { "HVMG2" : "ami-3bfab942"  },
       "eu-central-1"   : { "HVMG2" : "ami-ac442ac3"  },
       "ap-southeast-2" : { "HVMG2" : "ami-43874721"  }
