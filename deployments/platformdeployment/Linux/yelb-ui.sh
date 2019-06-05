@@ -52,7 +52,8 @@ export NVM_DIR="$HOME/.nvm"
 [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"  # This loads nvm
 [ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"  # This loads nvm bash_completion
 . ~/.nvm/nvm.sh
-# the echo here after has been introduced due to a new prompt for enabling / disabling Google analytics
+# the echo here after has been introduced due to a new prompt for enabling / disabling Google analytics 
+# Note: this may not be strictly required (to be investigated)  
 echo N | npm install -g @angular/cli
 
 cd $HOMEDIR
@@ -81,7 +82,11 @@ sed -i "s/YELB_APPSERVER_ENDPOINT/$YELB_APPSERVER_ENDPOINT/" ./clarity-seed/src/
 # the custom flag should be used when you need to have the browser point to a different target that isn't the origin
 # e.g. in a serverless deployment where the Angular UI is deployed on an S3 bucket and the yelb-appserver logic is exposed through an API Gateway 
 cd ./clarity-seed/src
-npm install  
+# the specific node-sass@latest had to be called out due to an error during the build of the app (ng build)
+# building while deploying isn't probably the best way to handle this as there is a lot of variables. 
+# ultimately the build will need to move outside of the deployment script and this part below should just be a copy of the artifact
+# note that the same build in the yelb-ui Dockerfile doesn't require the call out of the node-sass module   
+npm install node-sass@latest
 sudo mkdir /custom
 sudo chmod 777 /custom
 ng build --environment=prod --output-path=/custom/dist/
