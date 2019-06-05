@@ -25,23 +25,35 @@ disable :protection
 
 # the system variable RACK_ENV controls which environment you are enabling
 # if you choose 'custom' with RACK_ENV, all systems variables in the section need to be set before launching the yelb-appserver application
+# the DDB/Region variables in test/development are there for convenience (there is no logic to avoid exceptions when reading these variables) 
+# there is no expectations to be able to use DDB for test/dev 
+ 
 configure :production do
   set :redishost, "redis-server"
   set :port, 4567
   set :yelbdbhost => "yelb-db"
   set :yelbdbport => 5432
+  set :yelbddbrestaurants => ENV['YELB_DDB_RESTAURANTS']
+  set :yelbddbcache => ENV['YELB_DDB_CACHE']
+  set :awsregion => ENV['AWS_REGION']
 end
 configure :test do
   set :redishost, "redis-server"
   set :port, 4567
   set :yelbdbhost => "yelb-db"
   set :yelbdbport => 5432
+  set :yelbddbrestaurants => ENV['YELB_DDB_RESTAURANTS']
+  set :yelbddbcache => ENV['YELB_DDB_CACHE']
+  set :awsregion => ENV['AWS_REGION']
 end
 configure :development do
   set :redishost, "localhost"
   set :port, 4567
   set :yelbdbhost => "localhost"
   set :yelbdbport => 5432
+  set :yelbddbrestaurants => ENV['YELB_DDB_RESTAURANTS']
+  set :yelbddbcache => ENV['YELB_DDB_CACHE']
+  set :awsregion => ENV['AWS_REGION']
 end
 configure :custom do
   set :redishost, ENV['REDIS_SERVER_ENDPOINT']
@@ -65,9 +77,10 @@ end
 
 $yelbdbhost = settings.yelbdbhost
 $redishost = settings.redishost
-$yelbddbcache = settings.yelbddbcache
-$yelbddbrestaurants = settings.yelbddbrestaurants
-$awsregion = settings.awsregion
+# the yelbddbcache, yelbdbrestaurants and the awsregion variables are only intended to use in the serverless scenario (DDB)
+if (settings.yelbddbcache != nil) then $yelbddbcache = settings.yelbddbcache end 
+if (settings.yelbddbrestaurants != nil) then $yelbddbrestaurants = settings.yelbddbrestaurants end 
+if (settings.awsregion != nil) then $awsregion = settings.awsregion end 
 
 get '/api/pageviews' do
     headers 'Access-Control-Allow-Origin' => '*'
