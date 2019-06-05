@@ -82,7 +82,7 @@ Resources:
             ContainerDefinitions:
                 - Name: yelb-db
                   Essential: true
-                  Image: mreferre/yelb-db:0.3
+                  Image: mreferre/yelb-db:0.5
                   LogConfiguration:
                     LogDriver: awslogs
                     Options:
@@ -156,7 +156,7 @@ Resources:
             ContainerDefinitions:
                 - Name: yelb-appserver
                   Essential: true
-                  Image: mreferre/yelb-appserver:0.4
+                  Image: mreferre/yelb-appserver:0.5
                   Environment: 
                     - Name: SEARCH_DOMAIN
                       Value: !Ref 'Domain' 
@@ -201,7 +201,7 @@ Resources:
             ContainerDefinitions:
                 - Name: yelb-ui
                   Essential: true
-                  Image: mreferre/yelb-ui:0.4
+                  Image: mreferre/yelb-ui:0.5
                   Environment: 
                     - Name: SEARCH_DOMAIN
                       Value: !Ref 'Domain' 

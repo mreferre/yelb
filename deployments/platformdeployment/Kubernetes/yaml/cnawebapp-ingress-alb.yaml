@@ -91,7 +91,7 @@ spec:
     spec:
       containers:
       - name: yelb-ui
-        image:  mreferre/yelb-ui:0.3
+        image:  mreferre/yelb-ui:0.5
         ports:
         - containerPort: 80
 ---
@@ -127,7 +127,7 @@ spec:
     spec:
       containers:
       - name: yelb-db
-        image:  mreferre/yelb-db:0.3
+        image:  mreferre/yelb-db:0.5
         ports:
         - containerPort: 5432
 ---
@@ -145,7 +145,7 @@ spec:
     spec:
       containers:
       - name: yelb-appserver
-        image:  mreferre/yelb-appserver:0.3
+        image:  mreferre/yelb-appserver:0.5
         ports:
         - containerPort: 4567
 

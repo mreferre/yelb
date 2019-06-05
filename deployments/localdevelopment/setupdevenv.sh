@@ -4,7 +4,7 @@
 # workstation requirements: git, Docker, Ruby (with proper libraries/gems), angular@CLI 
 
 docker run --name redis -p 6379:6379 -d redis:4.0.2
-docker run --name postgres -p 5432:5432 -d mreferre/yelb-db:0.3
+docker run --name postgres -p 5432:5432 -d mreferre/yelb-db:0.5
 
 cd ./yelb/yelb-appserver
 export RACK_ENV=development 
