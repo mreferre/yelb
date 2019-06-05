@@ -6,7 +6,9 @@ MAINTAINER massimo@it20.info
 # Set the working directory to /app
 WORKDIR /app
 
-COPY yelb-appserver.rb yelb-appserver.rb
+COPY yelb-appserver.rb yelb-appserver.rb 
+COPY Gemfile Gemfile
+COPY modules modules
 
 ENV LANG=en_us.UTF-8
 ENV LC_ALL=C.UTF-8
