@@ -75,7 +75,7 @@ spec:
     spec:
       containers:
       - name: yelb-ui
-        image:  mreferre/yelb-ui:0.5
+        image:  harbor.trvcloud.com/yelb/yelb-ui:0.5
         ports:
         - containerPort: 80
 ---
