@@ -20,7 +20,7 @@ Parameters:
         Default: "Default"
 
     Domain:
-        Description: An arbitrary internal domain name for the application (only required for internal service discovery - default is yelb.local) 
+        Description: An arbitrary internal domain name for the application (only required for internal service discovery - default is yelb.local). It must be unique across multiple deploymemts.
         Type: String
         Default: "yelb.local"
 
@@ -56,7 +56,6 @@ Resources:
     ServiceYelbDb: 
         Type: AWS::ECS::Service
         Properties: 
-            ServiceName: yelb-db
             LaunchType: !Ref LaunchType
             Cluster: !Ref Cluster
             DesiredCount: 1
@@ -93,7 +92,6 @@ Resources:
     ServiceRedisServer: 
         Type: AWS::ECS::Service
         Properties: 
-            ServiceName: redis-server
             LaunchType: !Ref LaunchType
             Cluster: !Ref Cluster
             DesiredCount: 1
@@ -130,7 +128,6 @@ Resources:
     ServiceYelbAppserver: 
         Type: AWS::ECS::Service
         Properties: 
-            ServiceName: yelb-appserver
             LaunchType: !Ref LaunchType
             Cluster: !Ref Cluster
             DesiredCount: !Ref CountOfAppserverTasks
@@ -171,7 +168,6 @@ Resources:
         Type: AWS::ECS::Service
         DependsOn: YelbLoadBalancerListener
         Properties: 
-            ServiceName: yelb-ui
             LaunchType: !Ref LaunchType
             Cluster: !Ref Cluster
             DesiredCount: !Ref CountOfUiTasks
@@ -393,7 +389,6 @@ Resources:
         HealthCheckProtocol: HTTP
         HealthCheckTimeoutSeconds: 5
         HealthyThresholdCount: 2
-        Name: yelb-ui
         TargetType: ip 
         VpcId: !Ref VPC
         Port: 80
