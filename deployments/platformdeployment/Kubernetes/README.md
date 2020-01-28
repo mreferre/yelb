@@ -1,0 +1,1 @@
+This folder contains standard core Kubernetes YAML artifacts as well as Helm charts.  

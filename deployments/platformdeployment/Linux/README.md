@@ -4,4 +4,6 @@ This problem has been resolved already in the industry and these scripts should 
 
 Also, consider that some of these scripts seem to be working only if you explicitly login with the user `root`. Some will work with sudo/su but some require that you actually login as `root`. If you run these scripts at startup via `cloud-init` it is fine as you are running the scripts with the user `root`.  
 
-This is a work in progress.
+These scripts are currently being used when deploying on EC2 instances using the Amazon Linux OS referred above. See the `AWS/EC2` platform deployment model. They are also the foundation for the various Dockerfiles.    
+
+In general, building and exploring the limitations of these scripts should make you appreciate the value that containers provide. 

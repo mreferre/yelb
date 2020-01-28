@@ -20,3 +20,10 @@ This deploys to EC2:
 aws cloudformation create-stack --template-body  file://./yelb-cloudformation-ECS-deployment.yaml --parameters ParameterKey=Cluster,ParameterValue="TestCluster" ParameterKey=VPC,ParameterValue="vpc-cfeafcb6" ParameterKey=PublicSubnetOne,ParameterValue="subnet-6a88e013" ParameterKey=PublicSubnetTwo,ParameterValue="subnet-6cc35627" ParameterKey=LaunchType,ParameterValue="EC2" ParameterKey=Domain,ParameterValue="yelb.local" ParameterKey=CountOfUiTasks,ParameterValue=2 ParameterKey=CountOfAppserverTasks,ParameterValue=3 ParameterKey=PublicIP,ParameterValue="DISABLED" --capabilities CAPABILITY_IAM --stack-name yelb-ec2 --region us-west-2
 ```
 
+This is a visual representation of the ECS/EC2 deployment: 
+
+![yelb-ecs-ec2](../../images/yelb-ecs-ec2.png) 
+
+This is a visual representation of the ECS/Fargate deployment: 
+
+![yelb-ecs-fargate](../../images/yelb-ecs-fargate.png) 

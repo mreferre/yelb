@@ -19,3 +19,6 @@ Not specifically serverless but, in addition to the `deploy-yelb-lambda-ddb.yaml
 
 Note there isn't yet a cleanup script so you have to manually delete the bucket you created and the cloudformation stack when you are done with your tests. 
 
+This is a visual representation of the full serverless deployment (using Lambda and DynamoDB): 
+
+![yelb-lambda-dbb](../../images/yelb-lambda-ddb.png) 

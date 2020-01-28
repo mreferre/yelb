@@ -2,7 +2,7 @@ This script starts Yelb in a local `test` environment (leveraging containers).
 
 The workstation you are using doesn't have any prerequisit (except for `Docker`).
 
-Move to the directory where you want to work and clone the repo:
+You can either `docker-compose up` the yaml file provided in this folder or, alternatively, you can run these commands manually to stand up the environment :
 
 ```
 docker network create yelb-network 
@@ -16,5 +16,3 @@ You should now be able to see the application running by connecting your browser
 In this local test scenario all services are exposed on their ports and they are all referenced with `localhost:<port>`. In this scenario there is no need for name resolutions and service discovery (everything is resolved as `localhost`). 
 
 Note that for the local test scenario we need to force the `RACK_ENV` variable to `test` and the `UI_ENV` variable to `test`. Their default is respectively `production` and `prod`. 
-
-A sample docker-compose file is provided as a courtesy.
