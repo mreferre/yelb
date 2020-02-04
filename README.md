@@ -1,5 +1,5 @@
 
-#### Why Yelb 
+#### Why Yelb? 
 
 Yelb is an app I wrote from scratch (leveraging existing frameworks and tools such as Sinatra, Clarity and others). 
 
