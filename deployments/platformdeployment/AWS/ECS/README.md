@@ -22,8 +22,8 @@ aws cloudformation create-stack --template-body  file://./yelb-cloudformation-EC
 
 This is a visual representation of the ECS/EC2 deployment: 
 
-![yelb-ecs-ec2](../../images/yelb-ecs-ec2.png) 
+![yelb-ecs-ec2](../../../../images/yelb-ecs-ec2.png) 
 
 This is a visual representation of the ECS/Fargate deployment: 
 
-![yelb-ecs-fargate](../../images/yelb-ecs-fargate.png) 
+![yelb-ecs-fargate](../../../../images/yelb-ecs-fargate.png) 

@@ -4,7 +4,7 @@ Please not that these scripts compile the Angular UI at deployment time. That is
 
 This is a visual representation of the distributed deployment: 
 
-![yelb-ec2-distributed](../../images/yelb-ec2-distributed.png) 
+![yelb-ec2-distributed](../../../../images/yelb-ec2-distributed.png) 
 
 Note: this deployment doesn't implement any well architected best practice and is only provided as a proof of concept. 
 

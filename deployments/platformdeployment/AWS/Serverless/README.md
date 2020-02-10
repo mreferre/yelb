@@ -21,4 +21,4 @@ Note there isn't yet a cleanup script so you have to manually delete the bucket 
 
 This is a visual representation of the full serverless deployment (using Lambda and DynamoDB): 
 
-![yelb-lambda-dbb](../../images/yelb-lambda-ddb.png) 
+![yelb-lambda-dbb](../../../../images/yelb-lambda-ddb.png) 
