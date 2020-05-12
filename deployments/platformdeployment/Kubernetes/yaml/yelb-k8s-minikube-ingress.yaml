@@ -73,12 +73,16 @@ spec:
               serviceName: yelb-ui
               servicePort: 80
 ---
-apiVersion: extensions/v1beta1
+apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: yelb-ui
 spec:
   replicas: 1
+  selector:
+    matchLabels: 
+      app: yelb-ui
+      tier: frontend    
   template:
     metadata:
       labels:
@@ -91,12 +95,16 @@ spec:
         ports:
         - containerPort: 80
 ---
-apiVersion: extensions/v1beta1
+apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: redis-server
 spec:
   replicas: 1
+  selector:
+    matchLabels: 
+      app: redis-server
+      tier: cache
   template:
     metadata:
       labels:
@@ -109,12 +117,16 @@ spec:
         ports:
         - containerPort: 6379
 ---
-apiVersion: extensions/v1beta1
+apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: yelb-db
 spec:
   replicas: 1
+  selector:
+    matchLabels: 
+      app: yelb-db
+      tier: backenddb
   template:
     metadata:
       labels:
@@ -127,12 +139,16 @@ spec:
         ports:
         - containerPort: 5432
 ---
-apiVersion: extensions/v1beta1
+apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: yelb-appserver
 spec:
   replicas: 1
+  selector:
+    matchLabels: 
+      app: yelb-appserver
+      tier: middletier
   template:
     metadata:
       labels:

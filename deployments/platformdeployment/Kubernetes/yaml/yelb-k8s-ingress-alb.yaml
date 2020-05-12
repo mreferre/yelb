@@ -1,5 +1,5 @@
-# This should work on Kubernetes deployments on AWS that have an ALB ingress controller deployed (and worker nodes). 
-# This will work with EKS/Fargate because the ALB ingress by default uses the NodePort.   
+# This should work on Kubernetes deployments on AWS that have an ALB ingress controller deployed. 
+# This uses the IP mechanism and so it will work with both standard worker nodes as well as EKS/Fargate. 
 apiVersion: v1
 kind: Service
 metadata:
@@ -78,12 +78,16 @@ spec:
               serviceName: "yelb-ui"
               servicePort: 80
 ---
-apiVersion: extensions/v1beta1
+apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: yelb-ui
 spec:
   replicas: 1
+  selector:
+    matchLabels: 
+      app: yelb-ui
+      tier: frontend    
   template:
     metadata:
       labels:
@@ -96,12 +100,16 @@ spec:
         ports:
         - containerPort: 80
 ---
-apiVersion: extensions/v1beta1
+apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: redis-server
 spec:
   replicas: 1
+  selector:
+    matchLabels: 
+      app: redis-server
+      tier: cache
   template:
     metadata:
       labels:
@@ -114,12 +122,16 @@ spec:
         ports:
         - containerPort: 6379
 ---
-apiVersion: extensions/v1beta1
+apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: yelb-db
 spec:
   replicas: 1
+  selector:
+    matchLabels: 
+      app: yelb-db
+      tier: backenddb
   template:
     metadata:
       labels:
@@ -132,12 +144,16 @@ spec:
         ports:
         - containerPort: 5432
 ---
-apiVersion: extensions/v1beta1
+apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: yelb-appserver
 spec:
   replicas: 1
+  selector:
+    matchLabels: 
+      app: yelb-appserver
+      tier: middletier
   template:
     metadata:
       labels:
@@ -149,5 +165,4 @@ spec:
         image:  mreferre/yelb-appserver:0.5
         ports:
         - containerPort: 4567
-
 

@@ -1,4 +1,5 @@
-# This should work on an out of the box minikube setup 
+# This should work on Kubernetes deployments on AWS that have an ALB ingress controller deployed (and worker nodes). 
+# This will work with EKS/Fargate because the ALB ingress by default uses the NodePort.   
 apiVersion: v1
 kind: Service
 metadata:
@@ -55,23 +56,34 @@ spec:
   type: NodePort
   ports:
   - port: 80
-    protocol: TCP
-    targetPort: 80
-    # nodePort: 32777 <- if not specified, the system will generate a nodePort value
   selector:
     app: yelb-ui
     tier: frontend
 ---
-apiVersion: apps/v1
+apiVersion: extensions/v1beta1
+kind: Ingress
+metadata:
+  name: "yelb-ui"
+  annotations:
+    kubernetes.io/ingress.class: alb # check this, your ingress.class may be different 
+    alb.ingress.kubernetes.io/scheme: internet-facing 
+  labels:
+    app: "yelb-ui"
+spec:
+  rules:
+    - http:
+        paths:
+          - path: /*
+            backend:
+              serviceName: "yelb-ui"
+              servicePort: 80
+---
+apiVersion: extensions/v1beta1
 kind: Deployment
 metadata:
   name: yelb-ui
 spec:
   replicas: 1
-  selector:
-    matchLabels: 
-      app: yelb-ui
-      tier: frontend    
   template:
     metadata:
       labels:
@@ -80,20 +92,16 @@ spec:
     spec:
       containers:
       - name: yelb-ui
-        image: mreferre/yelb-ui:0.5
+        image:  mreferre/yelb-ui:0.5
         ports:
         - containerPort: 80
 ---
-apiVersion: apps/v1
+apiVersion: extensions/v1beta1
 kind: Deployment
 metadata:
   name: redis-server
 spec:
   replicas: 1
-  selector:
-    matchLabels: 
-      app: redis-server
-      tier: cache
   template:
     metadata:
       labels:
@@ -106,16 +114,12 @@ spec:
         ports:
         - containerPort: 6379
 ---
-apiVersion: apps/v1
+apiVersion: extensions/v1beta1
 kind: Deployment
 metadata:
   name: yelb-db
 spec:
   replicas: 1
-  selector:
-    matchLabels: 
-      app: yelb-db
-      tier: backenddb
   template:
     metadata:
       labels:
@@ -124,20 +128,16 @@ spec:
     spec:
       containers:
       - name: yelb-db
-        image: mreferre/yelb-db:0.5
+        image:  mreferre/yelb-db:0.5
         ports:
         - containerPort: 5432
 ---
-apiVersion: apps/v1
+apiVersion: extensions/v1beta1
 kind: Deployment
 metadata:
   name: yelb-appserver
 spec:
   replicas: 1
-  selector:
-    matchLabels: 
-      app: yelb-appserver
-      tier: middletier
   template:
     metadata:
       labels:
@@ -146,9 +146,8 @@ spec:
     spec:
       containers:
       - name: yelb-appserver
-        image: mreferre/yelb-appserver:0.5
+        image:  mreferre/yelb-appserver:0.5
         ports:
         - containerPort: 4567
-
 
 
