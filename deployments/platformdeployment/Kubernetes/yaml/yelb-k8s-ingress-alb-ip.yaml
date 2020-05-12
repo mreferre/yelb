@@ -1,5 +1,5 @@
-# This should work on Kubernetes deployments on AWS that have an ALB ingress controller deployed (and worker nodes). 
-# This will work with EKS/Fargate because the ALB ingress by default uses the NodePort.   
+# This should work on Kubernetes deployments on AWS that have an ALB ingress controller deployed. 
+# This uses the IP mechanism and so it will work with both standard worker nodes as well as EKS/Fargate. 
 apiVersion: v1
 kind: Service
 metadata:
@@ -67,6 +67,7 @@ metadata:
   annotations:
     kubernetes.io/ingress.class: alb # check this, your ingress.class may be different 
     alb.ingress.kubernetes.io/scheme: internet-facing 
+    alb.ingress.kubernetes.io/target-type: ip 
   labels:
     app: "yelb-ui"
 spec:
