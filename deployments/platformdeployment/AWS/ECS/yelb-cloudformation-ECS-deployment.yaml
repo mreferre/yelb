@@ -1,4 +1,4 @@
-"Description" : "Yelb on ECS: Create a Yelb stack using Elastic Container Service. This requires public subnets"
+"Description" : "Yelb on ECS: Create a Yelb stack using Elastic Container Service"
 
 Parameters: 
 
