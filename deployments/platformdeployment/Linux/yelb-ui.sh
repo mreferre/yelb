@@ -100,6 +100,7 @@ echo "    listen       80;" | sudo tee -a $NGINX_CONF > /dev/null
 echo "    server_name  localhost;" | sudo tee -a $NGINX_CONF > /dev/null
 echo "    location /api {" | sudo tee -a $NGINX_CONF > /dev/null
 echo "       proxy_pass http://"$YELB_APPSERVER_ENDPOINT":4567/api;" | sudo tee -a $NGINX_CONF > /dev/null
+echo "       proxy_http_version 1.1;" | sudo tee -a $NGINX_CONF > /dev/null
 echo "    }" | sudo tee -a $NGINX_CONF > /dev/null
 echo "" | sudo tee -a $NGINX_CONF > /dev/null
 echo "    access_log  /var/log/nginx/host.access.log  main;" | sudo tee -a $NGINX_CONF > /dev/null
