@@ -16,11 +16,15 @@ if ! grep -q "location /api" "$NGINX_CONF"; then
         proxy_pass http://yelb-appserver:4567/api;
         proxy_http_version 1.1;
     }
+    gzip on;
+    gzip_types text/plain text/css application/json application/javascript application/x-javascript text/xml application/xml application/xml+rss text/javascript;
+    gunzip on;
 EOF
 " > /proxycfg.txt
     # echo "        proxy_set_header Host $host;" >> /proxycfg.txt
     sed --in-place '/server_name  localhost;/ r /proxycfg.txt' $NGINX_CONF
 fi
+
 nginx -g "daemon off;" 
 
 
