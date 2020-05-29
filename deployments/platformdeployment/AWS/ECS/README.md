@@ -1,24 +1,10 @@
-This is a sample AWS Cloudformation template. This is provided as basic example to deploy Yelb on ECS. One template allows you to deploy using both the EC2 and FARGATE launch types. This template is not optimized; there is a huge space for improvement (feedbacks are welcome). 
+In this folder there are Cloudformation and CDK artifacts to deploy Yelb.
 
-Please note that:
-- I tested the `FARGATE` launch type in public subnets only (Fargate tasks require Internet access to pull images from Docker Hub) 
-- If you choose `FARGATE` as a `LaunchType` you have to set `PublicIP` to `ENABLED`
-- If you choose `EC2` as a `LaunchType` you have to set `PublicIP` to `DISABLED`
-- This template uses `awsvpc` as the networking mode so make sure your EC2 instances (in the `EC2` launch type scenario) have enough ENIs.
+The CFN template(s) allows to deploy on both Amazon EC2 as well as AWS Fargate on existing cluster and VPCs. 
 
-These are two CLI examples that work in my environments. 
+The CDK code allows to deploy on AWS Fargate only and it creates a dedicated ECS cluster and VPC. 
 
-This deploys to FARGATE:
-
-```
-aws cloudformation create-stack --template-body file://./yelb-cloudformation-ECS-deployment.yaml --parameters ParameterKey=Cluster,ParameterValue="TestCluster" ParameterKey=VPC,ParameterValue="vpc-cfeafcb6" ParameterKey=PublicSubnetOne,ParameterValue="subnet-6a88e013" ParameterKey=PublicSubnetTwo,ParameterValue="subnet-6cc35627" ParameterKey=LaunchType,ParameterValue="FARGATE" ParameterKey=Domain,ParameterValue="yelb.local" ParameterKey=CountOfUiTasks,ParameterValue=2 ParameterKey=CountOfAppserverTasks,ParameterValue=3 ParameterKey=PublicIP,ParameterValue="ENABLED" --capabilities CAPABILITY_IAM --stack-name yelb-fargate --region us-west-2
-```
-
-This deploys to EC2:
-
-```
-aws cloudformation create-stack --template-body  file://./yelb-cloudformation-ECS-deployment.yaml --parameters ParameterKey=Cluster,ParameterValue="TestCluster" ParameterKey=VPC,ParameterValue="vpc-cfeafcb6" ParameterKey=PublicSubnetOne,ParameterValue="subnet-6a88e013" ParameterKey=PublicSubnetTwo,ParameterValue="subnet-6cc35627" ParameterKey=LaunchType,ParameterValue="EC2" ParameterKey=Domain,ParameterValue="yelb.local" ParameterKey=CountOfUiTasks,ParameterValue=2 ParameterKey=CountOfAppserverTasks,ParameterValue=3 ParameterKey=PublicIP,ParameterValue="DISABLED" --capabilities CAPABILITY_IAM --stack-name yelb-ec2 --region us-west-2
-```
+They are provided as basic examples of how to deploy Yelb on ECS. 
 
 This is a visual representation of the ECS/EC2 deployment: 
 

@@ -1,14 +1,10 @@
-# Welcome to your CDK TypeScript project!
+This is a sample CDK program. This program does not accept inputs and it is somewhat opinionated in how it works. It creates a VPC, an ECS cluster and it deploys Yelb as a group of ECS services.
 
-This is a blank project for TypeScript development with CDK.
+In order to use CDK make sure you have it properly [installed on your system](https://docs.aws.amazon.com/cdk/latest/guide/getting_started.html) or use [eksutils](https://github.com/mreferre/eksutils).
 
-The `cdk.json` file tells the CDK Toolkit how to execute your app.
+Once you have the pre-requisite above, just launch:
 
-## Useful commands
-
- * `npm run build`   compile typescript to js
- * `npm run watch`   watch for changes and compile
- * `npm run test`    perform the jest unit tests
- * `cdk deploy`      deploy this stack to your default AWS account/region
- * `cdk diff`        compare deployed stack with current state
- * `cdk synth`       emits the synthesized CloudFormation template
+```
+npm install 
+cdk deploy 
+```
