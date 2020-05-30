@@ -1,0 +1,30 @@
+{
+  "name": "yelb-cdk8sv2",
+  "version": "1.0.0",
+  "main": "main.js",
+  "types": "main.ts",
+  "license": "Apache-2.0",
+  "private": true,
+  "scripts": {
+    "import": "cdk8s import",
+    "synth": "cdk8s synth",
+    "compile": "tsc",
+    "watch": "tsc -w",
+    "test": "jest",
+    "build": "npm run compile && npm run test && npm run synth",
+    "upgrade": "npm i cdk8s@latest cdk8s-cli@latest",
+    "upgrade:next": "npm i cdk8s@next cdk8s-cli@next"
+  },
+  "dependencies": {
+    "cdk8s": "^0.24.0",
+    "constructs": "^2.0.1"
+  },
+  "devDependencies": {
+    "@types/jest": "^25.2.3",
+    "@types/node": "^14.0.5",
+    "cdk8s-cli": "^0.24.0",
+    "jest": "^26.0.1",
+    "ts-jest": "^26.0.0",
+    "typescript": "^3.9.3"
+  }
+}
