@@ -1,1 +1,1 @@
-This folder contains both standard core Kubernetes YAML artifacts as well as Helm charts.
+This folder contains, standard core Kubernetes YAML artifacts,  Helm charts as well as [CDK8s](https://cdk8s.io/) artifacts.
