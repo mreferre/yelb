@@ -16,7 +16,7 @@ fi
 ###########################################################
 
 cd $HOMEDIR
-yum -y install gcc gcc-c++ make jemalloc-devel
+yum -y install gcc64 gcc-c++ make jemalloc-devel
 wget http://download.redis.io/redis-stable.tar.gz
 tar xvzf redis-stable.tar.gz
 cd redis-stable
