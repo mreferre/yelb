@@ -17,7 +17,7 @@ Parameters:
     Cluster:
         Description: Please provide the ECS Cluster ID that this service should run on
         Type: String
-        Default: "Default"
+        Default: "default"
 
     Domain:
         Description: An arbitrary internal domain name for the application (only required for internal service discovery - default is yelb.local). It must be unique across multiple deploymemts.
