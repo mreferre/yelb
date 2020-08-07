@@ -1,5 +1,5 @@
 # use this with `docker-compose up` against a generic Docker end-point (e.g. standalone Docker)
-version: "2.1"
+version: "3.0"
 services:
   yelb-ui:
     image: mreferre/yelb-ui:0.7
