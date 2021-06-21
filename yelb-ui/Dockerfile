@@ -1,9 +1,11 @@
-FROM node:10.13
+FROM node:12.22
 MAINTAINER massimo@it20.info
 
 WORKDIR /
 
 RUN npm install -g @angular/cli
+
+RUN npm install node-sass
 
 ADD clarity-seed-newfiles clarity-seed-newfiles 
 
