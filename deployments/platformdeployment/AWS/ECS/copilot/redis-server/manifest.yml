@@ -9,7 +9,7 @@ type: Backend Service
 
 image:
   # The name of the Docker image.
-  location: public.ecr.aws/bitnami/redis:4.0
+  location: redis:4.0.2
   # Port exposed through your container to route traffic to it.
   port: 6379
 
