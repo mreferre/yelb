@@ -4,16 +4,22 @@ config (svcname/manifest.yml).
 
 This folder contains the pre-created manifests. When Copilot detects that a service you are trying to create on the CLI already has a corresponding manifest (which matches the name of the service) it will skip the creation of the manifest. This means if you want to fine tune these services, you should tweak the manifests and not the commands below. 
 
-These commands assume you have the Copilot tool installed and you have an AWS CLI profile called `default` already created. Make sure you are running these commands needs to be run from this folder as the commands include relative paths:  
+These commands assume you have the Copilot tool installed and you have an AWS CLI profile called `default` already created. Make sure you are running these commands from the `/deployments/platformdeployment/AWS/ECS` folder because the copilot binary will look for a `copilot` folder.
+
+First initialize the app with this command:
 ```
 $ copilot app init
-
-$ copilot env init --name test-env --default-config —profile default 
-
+```
+Then initialize an environment to deploy the Yelb application:
+```
+$ copilot env init --name yelb-env --default-config —-profile default 
+```
+At this point we are ready to deploy the 4 services that comprise the applicatio:
+```
 $ copilot init --app yelb --name redis-server --image redis:redis:4.0.2 --type "Backend Service" --deploy 
-$ copilot init --app yelb --name yelb-db --dockerfile ../../../../../yelb-db/Dockerfile --type "Backend Service" --deploy 
-$ copilot init --app yelb --name yelb-appserver --dockerfile ../../../../../yelb-appserver/Dockerfile --type "Backend Service" --deploy 
-$ copilot init --app yelb --name yelb-ui --dockerfile ../../../../../yelb-ui/Dockerfile --type "Load Balanced Web Service" --port 80 --deploy
+$ copilot init --app yelb --name yelb-db --dockerfile ../../../../yelb-db/Dockerfile --type "Backend Service" --deploy 
+$ copilot init --app yelb --name yelb-appserver --dockerfile ../../../../yelb-appserver/Dockerfile --type "Backend Service" --deploy 
+$ copilot init --app yelb --name yelb-ui --dockerfile ../../../../yelb-ui/Dockerfile --type "Load Balanced Web Service" --port 80 --deploy
 ```
 
 Once all commands have completed you should see all services:
