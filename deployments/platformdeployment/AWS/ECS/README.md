@@ -1,4 +1,4 @@
-In this folder there are Cloudformation and CDK artifacts to deploy Yelb.
+In this folder there are Cloudformation, Copilot and CDK artifacts to deploy Yelb.
 
 The CFN template(s) allows to deploy on both Amazon EC2 as well as AWS Fargate on existing cluster and VPCs. 
 
