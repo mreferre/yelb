@@ -9,11 +9,13 @@ export class YelbEcsStack extends cdk.Stack {
     super(scope, id, props);
 
     const yelbvpc = new ec2.Vpc(this, "yelb-vpc", {});
+    //const yelbvpc = ec2.Vpc.fromLookup(this, "vpc-dev-envs", {isDefault: false});
 
     const yelbcluster = new ecs.Cluster(this, "yelb-cluster", {
       clusterName: "yelb-cluster",
       vpc: yelbvpc,
-      });
+    });
+
 
     const yelbnamespace = new servicediscovery.PrivateDnsNamespace(this, 'Namespace', {
       name: 'yelb.local',
@@ -23,12 +25,15 @@ export class YelbEcsStack extends cdk.Stack {
     // ------------------------------------------------------------------------------------------------- //
     const yelbuitaskdef = new ecs.FargateTaskDefinition(this, "yelb-ui-taskdef", {
       memoryLimitMiB: 2048, // Default is 512
-      cpu: 512, // Default is 256
+      cpu: 512, // Default is 256 
     });
 
     const yelbuicontainer = yelbuitaskdef.addContainer("yelb-ui-container", {
       image: ecs.ContainerImage.fromRegistry("mreferre/yelb-ui:0.7"), 
-      environment: {"SEARCH_DOMAIN": yelbnamespace.namespaceName}
+      environment: {"SEARCH_DOMAIN": yelbnamespace.namespaceName},
+      logging: ecs.LogDrivers.awsLogs({
+        streamPrefix: 'yelb-ui'
+      })
     })
 
     yelbuicontainer.addPortMappings({
@@ -38,7 +43,7 @@ export class YelbEcsStack extends cdk.Stack {
     // Create a load-balanced Fargate service and make it public
     const yelbuiservice = new ecs_patterns.ApplicationLoadBalancedFargateService(this, "yelb-ui-service", {
       cluster: yelbcluster, // Required
-      desiredCount: 3, // Default is 1
+      desiredCount: 1, // Default is 1
       publicLoadBalancer: true, // Default is false
       serviceName: "yelb-ui",
       taskDefinition: yelbuitaskdef,
@@ -57,16 +62,25 @@ export class YelbEcsStack extends cdk.Stack {
 
     const yelbappservercontainer = yelbappservertaskdef.addContainer("yelb-appserver-container", {
       image: ecs.ContainerImage.fromRegistry("mreferre/yelb-appserver:0.5"), 
-      environment: {"SEARCH_DOMAIN": yelbnamespace.namespaceName}
+      environment: {"SEARCH_DOMAIN": yelbnamespace.namespaceName},
+      logging: ecs.LogDrivers.awsLogs({
+        streamPrefix: 'yelb-appserver'
+      })
     })
 
     // Create a standard Fargate service 
     const yelbappserverservice = new ecs.FargateService(this, "yelb-appserver-service", {
       cluster: yelbcluster, // Required
-      desiredCount: 2, // Default is 1
+      desiredCount: 1, // Default is 1
       serviceName: "yelb-appserver",
       taskDefinition: yelbappservertaskdef,
-      cloudMapOptions: { name: "yelb-appserver", cloudMapNamespace: yelbnamespace}
+      cloudMapOptions: { name: "yelb-appserver", cloudMapNamespace: yelbnamespace},
+      capacityProviderStrategies: [
+        {
+          capacityProvider: 'FARGATE_SPOT',
+          weight: 1
+        }
+      ]
     });    
 
     yelbappserverservice.connections.allowFrom(yelbuiservice.service, ec2.Port.tcp(4567))
@@ -82,7 +96,10 @@ export class YelbEcsStack extends cdk.Stack {
     });
 
     const yelbdbcontainer = yelbdbtaskdef.addContainer("yelb-db-container", {
-      image: ecs.ContainerImage.fromRegistry("mreferre/yelb-db:0.5"), 
+      image: ecs.ContainerImage.fromRegistry("mreferre/yelb-db:0.5"),
+      logging: ecs.LogDrivers.awsLogs({
+        streamPrefix: 'yelb-db'
+      }) 
     })
 
     // Create a standard Fargate service 
@@ -90,7 +107,13 @@ export class YelbEcsStack extends cdk.Stack {
       cluster: yelbcluster, // Required
       serviceName: "yelb-db",
       taskDefinition: yelbdbtaskdef,
-      cloudMapOptions: { name: "yelb-db", cloudMapNamespace: yelbnamespace}
+      cloudMapOptions: { name: "yelb-db", cloudMapNamespace: yelbnamespace},
+      capacityProviderStrategies: [
+        {
+          capacityProvider: 'FARGATE',
+          weight: 1
+        }
+      ]
     });    
 
     yelbdbservice.connections.allowFrom(yelbappserverservice, ec2.Port.tcp(5432))
@@ -108,6 +131,9 @@ export class YelbEcsStack extends cdk.Stack {
 
     const redisservercontainer = redisservertaskdef.addContainer("redis-server", {
       image: ecs.ContainerImage.fromRegistry("redis:4.0.2"), 
+      logging: ecs.LogDrivers.awsLogs({
+        streamPrefix: 'yelb-redis'
+      })
     })
 
     // Create a standard Fargate service 
@@ -115,7 +141,13 @@ export class YelbEcsStack extends cdk.Stack {
       cluster: yelbcluster, // Required
       serviceName: "redis-server",
       taskDefinition: redisservertaskdef,
-      cloudMapOptions: { name: "redis-server", cloudMapNamespace: yelbnamespace}
+      cloudMapOptions: { name: "redis-server", cloudMapNamespace: yelbnamespace},
+      capacityProviderStrategies: [
+        {
+          capacityProvider: 'FARGATE_SPOT',
+          weight: 1
+        }
+      ]
     });    
 
     redisserverservice.connections.allowFrom(yelbappserverservice, ec2.Port.tcp(6379))

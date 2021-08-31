@@ -27,5 +27,11 @@
     "@aws-cdk/aws-servicediscovery": "^1.42.0",
     "@aws-cdk/core": "1.42.0",
     "source-map-support": "^0.5.16"
+  },
+  "scripts": {
+    "bootstrap": "CDK_NEW_BOOTSTRAP=1 cdk bootstrap --cloudformation-execution-policies arn:aws:iam::aws:policy/AdministratorAccess",
+    "deploy": "cdk deploy \"Yelb-${STAGE}\" --require-approval never --outputs-file cdk.out.json",
+    "postdeploy": "node --eval \"console.log('::set-output name=env_url::' + require('./cdk.out.json')['Yelb-${STAGE}'].DeploymentUrl)\"",
+    "destroy": "cdk destroy \"Yelb-${STAGE}\" --force"
   }
 }
