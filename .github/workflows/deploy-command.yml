@@ -1,0 +1,15 @@
+on:
+  workflow_dispatch:
+    inputs:
+      comment-id:
+        description: 'The comment-id of the slash command'
+        required: true
+jobs:
+  say_hello:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Add reaction
+        uses: peter-evans/create-or-update-comment@v1
+        with:
+          comment-id: ${{ github.event.inputs.comment-id }}
+          reaction-type: hooray
