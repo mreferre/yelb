@@ -139,7 +139,7 @@ Resources:
       Handler: index.handler
       Role:
         Fn::GetAtt: [ DDBLambdaRole , "Arn" ]
-      Runtime: nodejs10.x
+      Runtime: nodejs14.x
       Timeout: 60
 
   YelbDDBInitFunctionCache:
@@ -171,7 +171,7 @@ Resources:
       Handler: index.handler
       Role:
         Fn::GetAtt: [ DDBLambdaRole , "Arn" ]
-      Runtime: nodejs10.x
+      Runtime: nodejs14.x
       Timeout: 60
       
   InitializeDynamoDBRestaurants:
