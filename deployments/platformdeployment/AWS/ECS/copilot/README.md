@@ -12,7 +12,7 @@ $ copilot app init
 ```
 Then initialize an environment to deploy the Yelb application:
 ```
-$ copilot env init --name yelb-env --default-config —-profile default 
+$ copilot env init --name yelb-env --default-config --profile default 
 ```
 At this point we are ready to deploy the 4 services that comprise the applicatio:
 ```
