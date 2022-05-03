@@ -203,7 +203,7 @@ Resources:
     Properties:
       CodeUri: s3://yelb-appserver-serverless/yelb-appserver-serverless.zip
       Handler: getvotes_adapter.getvotes_adapter
-      Runtime: ruby2.5
+      Runtime: ruby2.7
       Role: !GetAtt DDBLambdaRole.Arn
       Environment:
         Variables:
@@ -226,7 +226,7 @@ Resources:
     Properties:
       CodeUri: s3://yelb-appserver-serverless/yelb-appserver-serverless.zip
       Handler: getstats_adapter.getstats_adapter
-      Runtime: ruby2.5
+      Runtime: ruby2.7
       Role: !GetAtt DDBLambdaRole.Arn
       Environment:
         Variables:
@@ -249,7 +249,7 @@ Resources:
     Properties:
       CodeUri: s3://yelb-appserver-serverless/yelb-appserver-serverless.zip
       Handler: hostname_adapter.hostname_adapter
-      Runtime: ruby2.5
+      Runtime: ruby2.7
       Role: !GetAtt DDBLambdaRole.Arn
       Environment:
         Variables:
@@ -272,7 +272,7 @@ Resources:
     Properties:
       CodeUri: s3://yelb-appserver-serverless/yelb-appserver-serverless.zip
       Handler: pageviews_adapter.pageviews_adapter
-      Runtime: ruby2.5
+      Runtime: ruby2.7
       Role: !GetAtt DDBLambdaRole.Arn
       Environment:
         Variables:
@@ -295,7 +295,7 @@ Resources:
     Properties:
       CodeUri: s3://yelb-appserver-serverless/yelb-appserver-serverless.zip
       Handler: restaurant_adapter.restaurant_adapter
-      Runtime: ruby2.5
+      Runtime: ruby2.7
       Role: !GetAtt DDBLambdaRole.Arn
       Environment:
         Variables:
