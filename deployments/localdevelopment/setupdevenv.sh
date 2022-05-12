@@ -8,8 +8,12 @@ docker run --name postgres -p 5432:5432 -d mreferre/yelb-db:0.5
 
 cd ./yelb/yelb-appserver
 export RACK_ENV=development 
+
+bundle install
+
 sudo gem install sinatra
 sudo gem install aws-sdk-dynamodb
+
 ruby yelb-appserver.rb & # this can be shut down with the kill command 
 
 cd ../yelb-ui
@@ -40,6 +44,3 @@ cd ..
 
 # connect your browser to: http://localhost:4200 
 # edit the source code in the yelb folder
-
-
-
