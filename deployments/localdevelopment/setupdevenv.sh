@@ -8,6 +8,8 @@ docker run --name postgres -p 5432:5432 -d mreferre/yelb-db:0.5
 
 cd ./yelb/yelb-appserver
 export RACK_ENV=development 
+sudo gem install sinatra
+sudo gem install aws-sdk-dynamodb
 ruby yelb-appserver.rb & # this can be shut down with the kill command 
 
 cd ../yelb-ui
@@ -22,14 +24,16 @@ git checkout -b f3250ee26ceb847f61bb167a90dc957edf6e7f43
 cp ../clarity-seed-newfiles/src/index.html src/index.html
 cp ../clarity-seed-newfiles/src/styles.css src/styles.css
 cp ../clarity-seed-newfiles/src/app/app* src/app
+cp ../clarity-seed-newfiles/src/app/env* src/app
 cp ../clarity-seed-newfiles/src/environments/env* src/environments
 cp ../clarity-seed-newfiles/package.json package.json
 cp ../clarity-seed-newfiles/angular-cli.json .angular-cli.json
 rm -r src/app/home
 rm -r src/app/about
+rm package-lock.json
 
-npm install 
-ng serve --port 4200 --environment=dev & # this can be shut down with the kill command
+npm install
+npm exec ng serve --port 4200 --environment=dev & # this can be shut down with the kill command
 
 cd ..
 
