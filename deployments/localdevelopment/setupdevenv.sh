@@ -37,7 +37,7 @@ rm -r src/app/about
 rm package-lock.json
 
 npm install
-npm exec ng serve --port 4200 --environment=dev & # this can be shut down with the kill command
+npx ng serve --port 4200 --environment=dev & # this can be shut down with the kill command
 
 cd ..
 
