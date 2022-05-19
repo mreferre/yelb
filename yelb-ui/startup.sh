@@ -14,6 +14,11 @@ sed -i -- 's#/usr/share/nginx/html#/clarity-seed/'$UI_ENV'/dist#g' $NGINX_CONF
 # everything that hits /api is proxied to the app server     
 if ! grep -q "location /api" "$NGINX_CONF"; then
     eval "cat <<EOF
+    location ~* \.(js|css|png|jpg|jpeg|gif|svg|ico)$ {
+        root /clarity-seed/test/dist;
+        expires 12h;
+        add_header Cache-Control \"public, no-transform\";
+    }
     location /api {
         proxy_pass http://yelb-appserver:4567/api;
         proxy_http_version 1.1;

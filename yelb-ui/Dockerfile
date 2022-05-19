@@ -1,9 +1,6 @@
 FROM node:12.22
-MAINTAINER massimo@it20.info
 
 WORKDIR /
-
-RUN npm install -g @angular/cli
 
 RUN npm install node-sass
 
@@ -28,13 +25,12 @@ WORKDIR /clarity-seed/src
 
 RUN npm install  
 
-RUN ng build --environment=prod --output-path=./prod/dist/ -aot -vc -cc -dop --buildOptimizer
-RUN ng build --environment=test --output-path=./test/dist/
-RUN ng build --environment=dev --output-path=./dev/dist/
+RUN npx ng build --environment=prod --output-path=./prod/dist/ -aot -vc -cc -dop --buildOptimizer
+RUN npx ng build --environment=test --output-path=./test/dist/
+RUN npx ng build --environment=dev --output-path=./dev/dist/
 
 
 FROM nginx:1.17.10
-MAINTAINER massimo@it20.info
 
 WORKDIR /
 ADD startup.sh startup.sh
