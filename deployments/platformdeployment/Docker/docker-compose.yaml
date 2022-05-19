@@ -2,7 +2,7 @@
 version: "3.0"
 services:
   yelb-ui:
-    image: mreferre/yelb-ui:0.7
+    image: fauh45/yelb-ui:v1
     depends_on:
       - yelb-appserver
     ports:
@@ -11,7 +11,7 @@ services:
       - yelb-network
 
   yelb-appserver:
-    image: mreferre/yelb-appserver:0.5
+    image: fauh45/yelb-appserver:v1
     depends_on:
       - redis-server
       - yelb-db
@@ -27,7 +27,7 @@ services:
     # - redisdata:/data
 
   yelb-db:
-    image: mreferre/yelb-db:0.5
+    image: fauh45/yelb-db:v1
     networks:
       - yelb-network
     # uncomment the following lines if you want to persist postgres data across deployments

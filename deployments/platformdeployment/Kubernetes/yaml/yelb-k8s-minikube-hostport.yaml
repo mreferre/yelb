@@ -11,7 +11,7 @@ metadata:
 spec:
   type: ClusterIP
   ports:
-  - port: 6379
+    - port: 6379
   selector:
     app: redis-server
     tier: cache
@@ -26,7 +26,7 @@ metadata:
 spec:
   type: ClusterIP
   ports:
-  - port: 5432
+    - port: 5432
   selector:
     app: yelb-db
     tier: backenddb
@@ -41,7 +41,7 @@ metadata:
 spec:
   type: ClusterIP
   ports:
-  - port: 4567
+    - port: 4567
   selector:
     app: yelb-appserver
     tier: middletier
@@ -54,9 +54,9 @@ spec:
   # with hostPort you can't have more than 1 replica because with minikube you only have 1 worker node
   replicas: 1
   selector:
-    matchLabels: 
+    matchLabels:
       app: yelb-ui
-      tier: frontend    
+      tier: frontend
   template:
     metadata:
       labels:
@@ -64,11 +64,11 @@ spec:
         tier: frontend
     spec:
       containers:
-      - name: yelb-ui
-        image: mreferre/yelb-ui:0.7
-        ports:
-        - containerPort: 80
-          hostPort: 32777 # depending on the minikube driver you use you may be able to even use 80. But something above 32000 seems safer 
+        - name: yelb-ui
+          image: fauh45/yelb-ui:v1
+          ports:
+            - containerPort: 80
+              hostPort: 32777 # depending on the minikube driver you use you may be able to even use 80. But something above 32000 seems safer
 ---
 apiVersion: apps/v1
 kind: Deployment
@@ -77,7 +77,7 @@ metadata:
 spec:
   replicas: 1
   selector:
-    matchLabels: 
+    matchLabels:
       app: redis-server
       tier: cache
   template:
@@ -87,10 +87,10 @@ spec:
         tier: cache
     spec:
       containers:
-      - name: redis-server
-        image: redis:4.0.2
-        ports:
-        - containerPort: 6379
+        - name: redis-server
+          image: redis:4.0.2
+          ports:
+            - containerPort: 6379
 ---
 apiVersion: apps/v1
 kind: Deployment
@@ -99,7 +99,7 @@ metadata:
 spec:
   replicas: 1
   selector:
-    matchLabels: 
+    matchLabels:
       app: yelb-db
       tier: backenddb
   template:
@@ -109,10 +109,10 @@ spec:
         tier: backenddb
     spec:
       containers:
-      - name: yelb-db
-        image: mreferre/yelb-db:0.5
-        ports:
-        - containerPort: 5432
+        - name: yelb-db
+          image: fauh45/yelb-db:v1
+          ports:
+            - containerPort: 5432
 ---
 apiVersion: apps/v1
 kind: Deployment
@@ -121,7 +121,7 @@ metadata:
 spec:
   replicas: 1
   selector:
-    matchLabels: 
+    matchLabels:
       app: yelb-appserver
       tier: middletier
   template:
@@ -131,11 +131,7 @@ spec:
         tier: middletier
     spec:
       containers:
-      - name: yelb-appserver
-        image: mreferre/yelb-appserver:0.5
-        ports:
-        - containerPort: 4567
-
-
-
-
+        - name: yelb-appserver
+          image: fauh45/yelb-appserver:v1
+          ports:
+            - containerPort: 4567

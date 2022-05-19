@@ -1,7 +1,7 @@
 version: '3'
 services:
   yelb-ui:
-    image: 'mreferre/yelb-ui:0.7'
+    image: 'fauh45/yelb-ui:v1'
     depends_on:
       - yelb-appserver
     ports:
@@ -13,7 +13,7 @@ services:
       restart_policy:
         condition: on-failure
   yelb-appserver:
-    image: 'mreferre/yelb-appserver:0.5'
+    image: 'fauh45/yelb-appserver:v1'
     depends_on:
       - redis-server
       - yelb-db
@@ -32,7 +32,7 @@ services:
       restart_policy:
         condition: on-failure
   yelb-db:
-    image: 'mreferre/yelb-db:0.5'
+    image: 'fauh45/yelb-db:v1'
     networks:
       - yelb-network
     deploy:

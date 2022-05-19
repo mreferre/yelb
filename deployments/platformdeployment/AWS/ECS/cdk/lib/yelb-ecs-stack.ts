@@ -27,7 +27,7 @@ export class YelbEcsStack extends cdk.Stack {
     });
 
     const yelbuicontainer = yelbuitaskdef.addContainer("yelb-ui-container", {
-      image: ecs.ContainerImage.fromRegistry("mreferre/yelb-ui:0.7"), 
+      image: ecs.ContainerImage.fromRegistry("fauh45/yelb-ui:v1"), 
       environment: {"SEARCH_DOMAIN": yelbnamespace.namespaceName}
     })
 
@@ -56,7 +56,7 @@ export class YelbEcsStack extends cdk.Stack {
     });
 
     const yelbappservercontainer = yelbappservertaskdef.addContainer("yelb-appserver-container", {
-      image: ecs.ContainerImage.fromRegistry("mreferre/yelb-appserver:0.5"), 
+      image: ecs.ContainerImage.fromRegistry("fauh45/yelb-appserver:v1"), 
       environment: {"SEARCH_DOMAIN": yelbnamespace.namespaceName}
     })
 
@@ -82,7 +82,7 @@ export class YelbEcsStack extends cdk.Stack {
     });
 
     const yelbdbcontainer = yelbdbtaskdef.addContainer("yelb-db-container", {
-      image: ecs.ContainerImage.fromRegistry("mreferre/yelb-db:0.5"), 
+      image: ecs.ContainerImage.fromRegistry("fauh45/yelb-db:v1"), 
     })
 
     // Create a standard Fargate service 

@@ -1,4 +1,4 @@
-# This should work on an out of the box minikube setup 
+# This should work on an out of the box minikube setup
 apiVersion: v1
 kind: Service
 metadata:
@@ -9,7 +9,7 @@ metadata:
 spec:
   type: ClusterIP
   ports:
-  - port: 6379
+    - port: 6379
   selector:
     app: redis-server
     tier: cache
@@ -24,7 +24,7 @@ metadata:
 spec:
   type: ClusterIP
   ports:
-  - port: 5432
+    - port: 5432
   selector:
     app: yelb-db
     tier: backenddb
@@ -39,7 +39,7 @@ metadata:
 spec:
   type: ClusterIP
   ports:
-  - port: 4567
+    - port: 4567
   selector:
     app: yelb-appserver
     tier: middletier
@@ -54,7 +54,7 @@ metadata:
 spec:
   type: ClusterIP
   ports:
-  - port: 80
+    - port: 80
   selector:
     app: yelb-ui
     tier: frontend
@@ -70,10 +70,10 @@ spec:
         paths:
           - path: /
             pathType: Prefix
-            backend: 
-              service: 
+            backend:
+              service:
                 name: yelb-ui
-                port: 
+                port:
                   number: 80
 ---
 apiVersion: apps/v1
@@ -83,9 +83,9 @@ metadata:
 spec:
   replicas: 1
   selector:
-    matchLabels: 
+    matchLabels:
       app: yelb-ui
-      tier: frontend    
+      tier: frontend
   template:
     metadata:
       labels:
@@ -93,10 +93,10 @@ spec:
         tier: frontend
     spec:
       containers:
-      - name: yelb-ui
-        image: mreferre/yelb-ui:0.7
-        ports:
-        - containerPort: 80
+        - name: yelb-ui
+          image: fauh45/yelb-ui:v1
+          ports:
+            - containerPort: 80
 ---
 apiVersion: apps/v1
 kind: Deployment
@@ -105,7 +105,7 @@ metadata:
 spec:
   replicas: 1
   selector:
-    matchLabels: 
+    matchLabels:
       app: redis-server
       tier: cache
   template:
@@ -115,10 +115,10 @@ spec:
         tier: cache
     spec:
       containers:
-      - name: redis-server
-        image: redis:4.0.2
-        ports:
-        - containerPort: 6379
+        - name: redis-server
+          image: redis:4.0.2
+          ports:
+            - containerPort: 6379
 ---
 apiVersion: apps/v1
 kind: Deployment
@@ -127,7 +127,7 @@ metadata:
 spec:
   replicas: 1
   selector:
-    matchLabels: 
+    matchLabels:
       app: yelb-db
       tier: backenddb
   template:
@@ -137,10 +137,10 @@ spec:
         tier: backenddb
     spec:
       containers:
-      - name: yelb-db
-        image: mreferre/yelb-db:0.5
-        ports:
-        - containerPort: 5432
+        - name: yelb-db
+          image: fauh45/yelb-db:v1
+          ports:
+            - containerPort: 5432
 ---
 apiVersion: apps/v1
 kind: Deployment
@@ -149,7 +149,7 @@ metadata:
 spec:
   replicas: 1
   selector:
-    matchLabels: 
+    matchLabels:
       app: yelb-appserver
       tier: middletier
   template:
@@ -159,7 +159,7 @@ spec:
         tier: middletier
     spec:
       containers:
-      - name: yelb-appserver
-        image: mreferre/yelb-appserver:0.5
-        ports:
-        - containerPort: 4567
+        - name: yelb-appserver
+          image: fauh45/yelb-appserver:v1
+          ports:
+            - containerPort: 4567
