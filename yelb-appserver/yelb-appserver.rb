@@ -18,6 +18,7 @@ require_relative 'modules/hostname'
 require_relative 'modules/getstats'
 require_relative 'modules/restaurantsdbupdate'
 require_relative 'modules/restaurantsdbread'
+require 'sinatra-websocket'
 
 # the disabled protection is required when running in production behind an nginx reverse proxy
 # without this option, the angular application will spit a `forbidden` error message
@@ -36,6 +37,8 @@ configure :production do
   set :yelbddbrestaurants => ENV['YELB_DDB_RESTAURANTS']
   set :yelbddbcache => ENV['YELB_DDB_CACHE']
   set :awsregion => ENV['AWS_REGION']
+  set :server, 'thin'
+  set :sockets, []
 end
 configure :test do
   set :redishost, "redis-server"
@@ -45,6 +48,8 @@ configure :test do
   set :yelbddbrestaurants => ENV['YELB_DDB_RESTAURANTS']
   set :yelbddbcache => ENV['YELB_DDB_CACHE']
   set :awsregion => ENV['AWS_REGION']
+  set :server, 'thin'
+  set :sockets, []
 end
 configure :development do
   set :redishost, "localhost"
@@ -54,6 +59,8 @@ configure :development do
   set :yelbddbrestaurants => ENV['YELB_DDB_RESTAURANTS']
   set :yelbddbcache => ENV['YELB_DDB_CACHE']
   set :awsregion => ENV['AWS_REGION']
+  set :server, 'thin'
+  set :sockets, []
 end
 configure :custom do
   set :redishost, ENV['REDIS_SERVER_ENDPOINT']
@@ -63,7 +70,8 @@ configure :custom do
   set :yelbddbrestaurants => ENV['YELB_DDB_RESTAURANTS']
   set :yelbddbcache => ENV['YELB_DDB_CACHE']
   set :awsregion => ENV['AWS_REGION']
-  
+  set :server, 'thin'
+  set :sockets, []
 end
 
 options "*" do
@@ -81,6 +89,23 @@ $redishost = settings.redishost
 if (settings.yelbddbcache != nil) then $yelbddbcache = settings.yelbddbcache end 
 if (settings.yelbddbrestaurants != nil) then $yelbddbrestaurants = settings.yelbddbrestaurants end 
 if (settings.awsregion != nil) then $awsregion = settings.awsregion end 
+
+get '/' do
+  if !request.websocket?
+    erb :index
+  else
+    request.websocket do |ws|
+      ws.onopen do
+        ws.send("Hello World!")
+        settings.sockets << ws
+      end
+      ws.onclose do
+        warn("websocket closed")
+        settings.sockets.delete(ws)
+      end
+    end
+  end
+end  
 
 get '/api/pageviews' do
     headers 'Access-Control-Allow-Origin' => '*'
