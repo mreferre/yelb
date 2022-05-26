@@ -15,7 +15,7 @@ sed -i -- 's#/usr/share/nginx/html#/clarity-seed/'$UI_ENV'/dist#g' $NGINX_CONF
 if ! grep -q "location /api" "$NGINX_CONF"; then
     eval "cat <<EOF
     location ~* \.(js|css|png|jpg|jpeg|gif|svg|ico)$ {
-        root /clarity-seed/test/dist;
+        root /clarity-seed/$UI_ENV/dist;
         expires 12h;
         add_header Cache-Control \"public, no-transform\";
     }
