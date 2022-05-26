@@ -96,7 +96,7 @@ get '/' do
   if request.websocket?
     request.websocket do |ws|
       ws.onopen do
-        ws.send('Hello World!')
+        ws.send(getvotes)
         settings.sockets << ws
       end
       ws.onclose do
@@ -174,7 +174,7 @@ get '/api/bucadibeppo' do
   headers 'Access-Control-Allow-Headers' => 'Authorization,Accepts,Content-Type,X-CSRF-Token,X-Requested-With'
   headers 'Access-Control-Allow-Methods' => 'GET,POST,PUT,DELETE,OPTIONS'
   @bucadibeppo = restaurantsupdate('bucadibeppo')
-  sendAllGetVotes(settings.sockets)
+  sendallgetbotes(settings.sockets)
 
   @bucadibeppo
 end # get /api/bucadibeppo
