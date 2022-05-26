@@ -22,6 +22,9 @@ RUN apt-get install libpq-dev -y
 RUN gem install pg -v 1.2.3 --no-ri --no-rdoc
 ### this installs the AWS SDK for DynamoDB (so that appserver can talk to DDB Vs the default Postgres/Redis)
 RUN gem install aws-sdk-dynamodb --no-ri --no-rdoc
+
+RUN bundle install
+
 # Set the working directory to /
 WORKDIR /
 ADD startup.sh startup.sh
