@@ -153,7 +153,7 @@ Resources:
             ContainerDefinitions:
                 - Name: yelb-appserver
                   Essential: true
-                  Image: fauh45/yelb-appserver:v1
+                  Image: fauh45/yelb-appserver:v1.1.0
                   Environment: 
                     - Name: SEARCH_DOMAIN
                       Value: !Ref 'Domain' 
@@ -197,7 +197,7 @@ Resources:
             ContainerDefinitions:
                 - Name: yelb-ui
                   Essential: true
-                  Image: fauh45/yelb-ui:v1.0.1
+                  Image: fauh45/yelb-ui:v1.1.0
                   Environment: 
                     - Name: SEARCH_DOMAIN
                       Value: !Ref 'Domain' 

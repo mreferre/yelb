@@ -33,7 +33,7 @@ export class AppComponent implements OnInit, OnDestroy {
     public appserver = environment.appserver_env;
 
     ws = new $WebSocket(
-        this.appserver.replace(/^https?:\/\//, "ws://"),
+        this.appserver.replace(/(http)(s)?\:\/\//, "ws$2://") + "/api/ws",
         undefined,
         {
             reconnectIfNotNormalClose: true,

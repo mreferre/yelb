@@ -92,7 +92,7 @@ $yelbddbcache = settings.yelbddbcache unless settings.yelbddbcache.nil?
 $yelbddbrestaurants = settings.yelbddbrestaurants unless settings.yelbddbrestaurants.nil?
 $awsregion = settings.awsregion unless settings.awsregion.nil?
 
-get '/' do
+get '/api/ws' do
   if request.websocket?
     request.websocket do |ws|
       ws.onopen do

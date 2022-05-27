@@ -27,7 +27,7 @@ export class YelbEcsStack extends cdk.Stack {
     });
 
     const yelbuicontainer = yelbuitaskdef.addContainer("yelb-ui-container", {
-      image: ecs.ContainerImage.fromRegistry("fauh45/yelb-ui:v1.0.1"), 
+      image: ecs.ContainerImage.fromRegistry("fauh45/yelb-ui:v1.1.0"), 
       environment: {"SEARCH_DOMAIN": yelbnamespace.namespaceName}
     })
 
@@ -56,7 +56,7 @@ export class YelbEcsStack extends cdk.Stack {
     });
 
     const yelbappservercontainer = yelbappservertaskdef.addContainer("yelb-appserver-container", {
-      image: ecs.ContainerImage.fromRegistry("fauh45/yelb-appserver:v1"), 
+      image: ecs.ContainerImage.fromRegistry("fauh45/yelb-appserver:v1.1.0"), 
       environment: {"SEARCH_DOMAIN": yelbnamespace.namespaceName}
     })
 

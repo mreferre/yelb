@@ -79,7 +79,7 @@ spec:
     spec:
       containers:
         - name: yelb-ui
-          image: fauh45/yelb-ui:v1.0.1
+          image: fauh45/yelb-ui:v1.1.0
           ports:
             - containerPort: 80
           resources:
@@ -179,7 +179,7 @@ spec:
     spec:
       containers:
         - name: yelb-appserver
-          image: fauh45/yelb-appserver:v1
+          image: fauh45/yelb-appserver:v1.1.0
           ports:
             - containerPort: 4567
           resources:
@@ -187,18 +187,5 @@ spec:
               cpu: "1"
               memory: 3Gi
             requests:
-              cpu: "0.8"
-              memory: 1Gi
----
-apiVersion: autoscaling/v1
-kind: HorizontalPodAutoscaler
-metadata:
-  name: yelb-appserver
-spec:
-  scaleTargetRef:
-    apiVersion: apps/v1
-    kind: Deployment
-    name: yelb-appserver
-  minReplicas: 1
-  maxReplicas: 3
-  targetCPUUtilizationPercentage: 80
+              cpu: "1"
+              memory: 2Gi

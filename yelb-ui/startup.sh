@@ -19,6 +19,13 @@ if ! grep -q "location /api" "$NGINX_CONF"; then
         expires 12h;
         add_header Cache-Control \"public, no-transform\";
     }
+    location /api/ws {
+        proxy_set_header Upgrade \\\$http_upgrade;
+        proxy_set_header Connection \"Upgrade\";
+        proxy_set_header Host \\\$host;
+        proxy_pass http://yelb-appserver:4567/api/ws;
+        proxy_http_version 1.1;
+    }
     location /api {
         proxy_pass http://yelb-appserver:4567/api;
         proxy_http_version 1.1;
