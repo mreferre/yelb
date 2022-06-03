@@ -2,10 +2,9 @@ import { Component, OnInit, Injectable, OnDestroy } from "@angular/core";
 import { Router } from "@angular/router";
 import { environment } from "../environments/environment";
 import { EnvService } from "../app/env.service";
-import { Headers, Http, Response } from "@angular/http";
-import { Observable } from "rxjs/Observable";
-import { $WebSocket } from "angular2-websocket/angular2-websocket";
+import { Http, Response } from "@angular/http";
 import "rxjs/add/operator/map";
+import { Socket } from "phoenix";
 
 @Injectable()
 @Component({
@@ -32,13 +31,10 @@ export class AppComponent implements OnInit, OnDestroy {
 
     public appserver = environment.appserver_env;
 
-    ws = new $WebSocket(
-        this.appserver.replace(/(http)(s)?\:\/\//, "ws$2://") + "/api/ws",
-        undefined,
-        {
-            reconnectIfNotNormalClose: true,
-        }
+    socket = new Socket(
+        this.appserver.replace(/(http)(s)?\:\/\//, "ws$2://") + "/socket"
     );
+    channel = this.socket.channel("votes");
 
     colorScheme = {
         domain: ["#5AA454", "#A10A28", "#C7B42C", "#AAAAAA"],
@@ -62,20 +58,28 @@ export class AppComponent implements OnInit, OnDestroy {
         // this.getvotes();
         this.getstats();
 
-        this.ws.getDataStream().subscribe((msg) => {
-            const [err, data] = this.safeJsonParse(msg.data);
-            if (!err) {
-                this.votes = data;
-            }
+        this.socket.connect();
+        this.channel.on("votes", (data) => {
+            console.log("New Data", data);
+
+            this.votes = Object.keys(data).map((key) => {
+                return { name: key, value: parseInt(data[key]) };
+            });
         });
+        this.channel
+            .join()
+            .receive("ok", ({ message }) =>
+                console.log("On join message", message)
+            )
+            .receive("error", (res) => console.log("Join Error", res));
     }
 
     ngOnDestroy() {
-        this.ws.close(true);
+        this.socket.disconnect();
     }
 
     getvotes(): void {
-        const url = `${this.appserver}/api/getvotes`;
+        const url = `${this.appserver}/api/votes`;
         console.log("connecting to app server " + url);
         this.http
             .get(url)
@@ -87,7 +91,7 @@ export class AppComponent implements OnInit, OnDestroy {
     }
 
     getstats(): void {
-        const url = `${this.appserver}/api/getstats`;
+        const url = `${this.appserver}/api/stats`;
         console.log("connecting to app server " + url);
         this.http
             .get(url)
@@ -99,10 +103,10 @@ export class AppComponent implements OnInit, OnDestroy {
     }
 
     vote(restaurant: string): void {
-        const url = `${this.appserver}/api/${restaurant}`;
+        const url = `${this.appserver}/api/vote/${restaurant}`;
         console.log("connecting to app server " + url);
         this.http
-            .get(url)
+            .post(url, {})
             .map((res: Response) => res.json())
             .subscribe((res) => {
                 console.log(res);
