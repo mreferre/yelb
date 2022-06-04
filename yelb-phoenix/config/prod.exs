@@ -12,7 +12,6 @@ import Config
 config :yelb_pheonix, YelbWeb.Endpoint,
   http: [port: "${PORT}"],
   url: [host: "${HOST}", port: "${PORT}"],
-  cache_static_manifest: "priv/static/cache_manifest.json",
   secret_key_base: "${SECRET_KEY_BASE}",
   server: true,
   root: "."
@@ -22,7 +21,7 @@ config :logger, level: :info
 
 config :redix,
   host: "${REDIS_HOST}",
-  port: "${REDIS_PORT}"
+  port: System.get_env("REDIS_PORT", "6379") |> String.to_integer()
 
 # ## SSL Support
 #
@@ -57,3 +56,8 @@ config :redix,
 #       force_ssl: [hsts: true]
 #
 # Check `Plug.SSL` for all available options in `force_ssl`.
+config :peerage,
+  via: Peerage.Via.Dns,
+  dns_name: "yelb-phoenix-headless.default.svc.cluster.local",
+  app_name: "yelb-phoenix",
+  interval: 3

@@ -16,7 +16,10 @@ defmodule Yelb.Application do
       YelbWeb.Endpoint,
       # Start a worker by calling: Yelb.Worker.start_link(arg)
       # {Yelb.Worker, arg},
-      {Redix, name: :redix}
+      {Redix,
+       host: Application.get_env(:redix, :host, "localhost"),
+       port: Application.get_env(:redix, :port, 6379),
+       name: :redix}
     ]
 
     # See https://hexdocs.pm/elixir/Supervisor.html

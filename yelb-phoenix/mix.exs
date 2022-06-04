@@ -20,6 +20,7 @@ defmodule Yelb.MixProject do
   def application do
     [
       mod: {Yelb.Application, []},
+      application: [:peerage],
       extra_applications: [:logger, :runtime_tools]
     ]
   end
@@ -43,7 +44,8 @@ defmodule Yelb.MixProject do
       {:redix, "~> 1.1"},
       {:castore, ">= 0.0.0"},
       {:cors_plug, "~> 3.0"},
-      {:distillery, "~> 1.0"}
+      {:distillery, "~> 2.0"},
+      {:peerage, "~> 1.0"}
     ]
   end
 

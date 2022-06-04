@@ -53,3 +53,5 @@ config :phoenix, :plug_init_mode, :runtime
 config :redix,
   host: "localhost",
   port: 6379
+
+config :peerage, via: Peerage.Via.Self

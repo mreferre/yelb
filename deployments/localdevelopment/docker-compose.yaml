@@ -3,28 +3,26 @@ services:
   yelb-ui:
     build: ../../yelb-ui
     depends_on:
-      - yelb-appserver
+      - yelb-phoenix
     ports:
       - 8080:80
     environment:
       - UI_ENV=dev # dev | test | prod 
 
-  yelb-appserver:
-    build: ../../yelb-appserver
+  yelb-phoenix:
+    build: ../../yelb-phoenix
     depends_on:
       - redis-server
-      - yelb-db
     ports:
-      - 4567:4567
+      - 4000:4000
     environment:
-      - RACK_ENV=development # development | test | production 
+      - HOST=localhost
+      - SECRET_KEY_BASE=SUPERSECRET!
+      - POD_IP=127.0.0.1
+      - REDIS_HOST=redis-server
+      - REDIS_PORT=6379
 
   redis-server:
-    image: redis:4.0.2
+    build: ../../redis-server
     ports:
       - 6379:6379
-
-  yelb-db:
-    build: ../../yelb-db
-    ports:
-      - 5432:5432

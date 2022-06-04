@@ -5,43 +5,42 @@ metadata:
   name: redis-server
   labels:
     app: redis-server
-    tier: cache
+    tier: db
 spec:
   type: ClusterIP
   ports:
     - port: 6379
   selector:
     app: redis-server
-    tier: cache
+    tier: db
 ---
 apiVersion: v1
 kind: Service
 metadata:
-  name: yelb-db
+  name: yelb-phoenix
   labels:
-    app: yelb-db
-    tier: backenddb
-spec:
-  type: ClusterIP
-  ports:
-    - port: 5432
-  selector:
-    app: yelb-db
-    tier: backenddb
----
-apiVersion: v1
-kind: Service
-metadata:
-  name: yelb-appserver
-  labels:
-    app: yelb-appserver
+    app: yelb-phoenix
     tier: middletier
 spec:
   type: ClusterIP
   ports:
-    - port: 4567
+    - port: 4000
   selector:
-    app: yelb-appserver
+    app: yelb-phoenix
+    tier: middletier
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: yelb-phoenix-headless
+  labels:
+    app: yelb-phoenix-headless
+spec:
+  clusterIP: None
+  ports:
+    - port: 4000
+  selector:
+    app: yelb-phoenix
     tier: middletier
 ---
 apiVersion: v1
@@ -79,7 +78,7 @@ spec:
     spec:
       containers:
         - name: yelb-ui
-          image: fauh45/yelb-ui:v1.1.0
+          image: fauh45/yelb-ui:v1.2.0
           ports:
             - containerPort: 80
           resources:
@@ -112,16 +111,16 @@ spec:
   selector:
     matchLabels:
       app: redis-server
-      tier: cache
+      tier: db
   template:
     metadata:
       labels:
         app: redis-server
-        tier: cache
+        tier: db
     spec:
       containers:
         - name: redis-server
-          image: redis:4.0.2
+          image: fauh45/yelb-redis-server:v0.1.0
           ports:
             - containerPort: 6379
           resources:
@@ -135,24 +134,33 @@ spec:
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: yelb-db
+  name: yelb-phoenix
 spec:
   replicas: 1
   selector:
     matchLabels:
-      app: yelb-db
-      tier: backenddb
+      app: yelb-phoenix
+      tier: middletier
   template:
     metadata:
       labels:
-        app: yelb-db
-        tier: backenddb
+        app: yelb-phoenix
+        tier: middletier
     spec:
       containers:
-        - name: yelb-db
-          image: fauh45/yelb-db:v1
+        - name: yelb-phoenix
+          image: fauh45/yelb-phoenix:v0.1.0
           ports:
-            - containerPort: 5432
+            - containerPort: 4567
+          env:
+            - name: HOST
+              value: yelb-ui-fauh45.cloud.okteto.net
+            - name: SECRET_KEY_BASE
+              value: CBqIGdHTlIBn5a5D7cdF4dCWifQVaQSI3lXZLzOy
+            - name: POD_IP
+              valueFrom:
+                fieldRef:
+                  fieldPath: status.podIP
           resources:
             limits:
               cpu: "1"
@@ -161,31 +169,15 @@ spec:
               cpu: "1"
               memory: 2Gi
 ---
-apiVersion: apps/v1
-kind: Deployment
+apiVersion: autoscaling/v1
+kind: HorizontalPodAutoscaler
 metadata:
-  name: yelb-appserver
+  name: yelb-phoenix
 spec:
-  replicas: 1
-  selector:
-    matchLabels:
-      app: yelb-appserver
-      tier: middletier
-  template:
-    metadata:
-      labels:
-        app: yelb-appserver
-        tier: middletier
-    spec:
-      containers:
-        - name: yelb-appserver
-          image: fauh45/yelb-appserver:v1.1.0
-          ports:
-            - containerPort: 4567
-          resources:
-            limits:
-              cpu: "1"
-              memory: 3Gi
-            requests:
-              cpu: "1"
-              memory: 2Gi
+  scaleTargetRef:
+    apiVersion: apps/v1
+    kind: Deployment
+    name: yelb-phoenix
+  minReplicas: 1
+  maxReplicas: 3
+  targetCPUUtilizationPercentage: 80
