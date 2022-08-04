@@ -1,5 +1,5 @@
 apiVersion: backstage.io/v1alpha1
-kind: Component
+kind: Target
 metadata:
   name: yelb
   annotations:
