@@ -1,0 +1,10 @@
+apiVersion: backstage.io/v1alpha1
+kind: Component
+metadata:
+  name: yelb
+  annotations:
+    github.com/project-slug: jeffchristoffersen/yelb
+spec:
+  type: other
+  lifecycle: unknown
+  owner: team-d
