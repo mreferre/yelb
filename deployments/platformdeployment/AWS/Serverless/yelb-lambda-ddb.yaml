@@ -31,6 +31,7 @@ Resources:
       - AttributeName: "counter"
         KeyType: "HASH"
       BillingMode: PAY_PER_REQUEST
+      
         
   DDBLambdaRole:
     Type: AWS::IAM::Role
