@@ -380,6 +380,7 @@ Resources:
         DefaultActions:
           - Type: forward
             TargetGroupArn: !Ref YelbTargetGroup
+            
 
     YelbTargetGroup:
       Type: AWS::ElasticLoadBalancingV2::TargetGroup
