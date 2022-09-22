@@ -1,7 +1,7 @@
 version: '3'
 services:
   yelb-ui:
-    image: 'mreferre/yelb-ui:0.7'
+    image: 'mreferre/yelb-ui:0.8'
     depends_on:
       - yelb-appserver
     ports:

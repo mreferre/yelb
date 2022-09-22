@@ -27,7 +27,7 @@ export class YelbEcsStack extends cdk.Stack {
     });
 
     const yelbuicontainer = yelbuitaskdef.addContainer("yelb-ui-container", {
-      image: ecs.ContainerImage.fromRegistry("mreferre/yelb-ui:0.7"), 
+      image: ecs.ContainerImage.fromRegistry("mreferre/yelb-ui:0.8"),
       environment: {"SEARCH_DOMAIN": yelbnamespace.namespaceName}
     })
 
