@@ -67,7 +67,7 @@ export class YelbCdk8s extends Chart {
             containers: [
               {
                 name: 'yelb-appserver',
-                image: 'mreferre/yelb-appserver:0.5'
+                image: 'mreferre/yelb-appserver:0.6'
               }
             ]
           }

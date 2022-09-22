@@ -56,7 +56,7 @@ export class YelbEcsStack extends cdk.Stack {
     });
 
     const yelbappservercontainer = yelbappservertaskdef.addContainer("yelb-appserver-container", {
-      image: ecs.ContainerImage.fromRegistry("mreferre/yelb-appserver:0.5"), 
+      image: ecs.ContainerImage.fromRegistry("mreferre/yelb-appserver:0.6"),
       environment: {"SEARCH_DOMAIN": yelbnamespace.namespaceName}
     })
 

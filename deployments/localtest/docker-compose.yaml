@@ -11,7 +11,7 @@ services:
       - UI_ENV=test # dev | test | prod 
 
   yelb-appserver:
-    image: mreferre/yelb-appserver:0.5
+    image: mreferre/yelb-appserver:0.6
     depends_on:
       - redis-server
       - yelb-db

@@ -153,7 +153,7 @@ Resources:
             ContainerDefinitions:
                 - Name: yelb-appserver
                   Essential: true
-                  Image: mreferre/yelb-appserver:0.5
+                  Image: mreferre/yelb-appserver:0.6
                   Environment: 
                     - Name: SEARCH_DOMAIN
                       Value: !Ref 'Domain' 

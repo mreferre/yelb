@@ -146,7 +146,7 @@ spec:
     spec:
       containers:
       - name: yelb-appserver
-        image:  mreferre/yelb-appserver:0.5
+        image:  mreferre/yelb-appserver:0.6
         ports:
         - containerPort: 4567
 
