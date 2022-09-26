@@ -1,10 +1,6 @@
-[
-  {
-    "ParameterKey": "InstanceType",
-    "ParameterValue": "m5.large"
-  },
-  {
-    "ParameterKey": "KeyName",
-    "ParameterValue": "max-us-west-2"
+{
+  "Parameters": {
+    "InstanceType": "m5.large",
+    "KeyName": "max-us-west-2"
   }
-]
+}
