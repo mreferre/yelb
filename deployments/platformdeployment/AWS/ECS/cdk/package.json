@@ -14,7 +14,7 @@
     "@aws-cdk/assert": "1.42.0",
     "@types/jest": "^25.2.1",
     "@types/node": "10.17.5",
-    "jest": "^25.5.0",
+    "jest": "^29.0.3",
     "ts-jest": "^25.3.1",
     "aws-cdk": "1.174.0",
     "ts-node": "^8.1.0",
