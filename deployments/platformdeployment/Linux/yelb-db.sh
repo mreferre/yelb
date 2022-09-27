@@ -24,7 +24,8 @@ sed -i "s/#port = 5432/port = 5432/" /var/lib/pgsql/data/postgresql.conf
 sed -i "s/peer/trust/" /var/lib/pgsql/data/pg_hba.conf
 sed -i "s/ident/trust/" /var/lib/pgsql/data/pg_hba.conf
 sed -i "s@host    all             all             127.0.0.1/32@host    all             all             0.0.0.0/0@" /var/lib/pgsql/data/pg_hba.conf
-service postgresql start
+systemctl enable postgresql
+systemctl start postgresql
 psql -v ON_ERROR_STOP=1 --username postgres <<-EOSQL
     CREATE DATABASE yelbdatabase;
     \connect yelbdatabase;
