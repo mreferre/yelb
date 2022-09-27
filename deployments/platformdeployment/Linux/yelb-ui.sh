@@ -55,6 +55,8 @@ export NVM_DIR="$HOME/.nvm"
 # the echo here after has been introduced due to a new prompt for enabling / disabling Google analytics 
 # Note: this may not be strictly required (to be investigated)  
 echo N | npm install -g @angular/cli@6.0.0
+echo N | npm install node-sass@4.13.1
+
 
 cd $HOMEDIR
 cd yelb/yelb-ui
