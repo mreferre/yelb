@@ -1,7 +1,7 @@
 {
   "AWSTemplateFormatVersion" : "2010-09-09",
 
-  "Description" : "Yelb single server: Create a Yelb stack using multiple EC2 instances. This sample template only works in selected regions. This has been tested on the default VPC with Public Subnets.",
+  "Description" : "Yelb distributed deployment: Create a Yelb stack using multiple EC2 instances. This sample template only works in selected regions. This has been tested on the default VPC with Public Subnets.",
 
   "Parameters" : {
     "KeyName": {
@@ -26,12 +26,12 @@
     },
 
     "AWSRegionArch2AMI" : {
-      "us-east-1"      : { "HVMG2" : "ami-1853ac65"  },
-      "us-west-1"      : { "HVMG2" : "ami-bf5540df"  },
-      "us-west-2"      : { "HVMG2" : "ami-d874e0a0"  },
-      "eu-west-1"      : { "HVMG2" : "ami-3bfab942"  },
-      "eu-central-1"   : { "HVMG2" : "ami-ac442ac3"  },
-      "ap-southeast-2" : { "HVMG2" : "ami-43874721"  }
+      "us-east-1"      : { "HVMG2" : "ami-026b57f3c383c2eec"  },
+      "us-west-1"      : { "HVMG2" : "ami-09208e69ff3feb1db"  },
+      "us-west-2"      : { "HVMG2" : "ami-08e2d37b6a0129927"  },
+      "eu-west-1"      : { "HVMG2" : "ami-0ea0f26a6d50850c5"  },
+      "eu-central-1"   : { "HVMG2" : "ami-05ff5eaef6149df49"  },
+      "ap-southeast-2" : { "HVMG2" : "ami-067e6178c7a211324"  }
     }
   },
 

@@ -54,7 +54,9 @@ export NVM_DIR="$HOME/.nvm"
 . ~/.nvm/nvm.sh
 # the echo here after has been introduced due to a new prompt for enabling / disabling Google analytics 
 # Note: this may not be strictly required (to be investigated)  
-echo N | npm install -g @angular/cli
+echo N | npm install -g @angular/cli@6.0.0
+echo N | npm install node-sass@4.13.1
+
 
 cd $HOMEDIR
 cd yelb/yelb-ui
@@ -94,7 +96,8 @@ ng build --environment=prod --output-path=/custom/dist/
 
 cd $HOMEDIR
 cd yelb/yelb-ui
-sudo yum install -y nginx
+amazon-linux-extras install epel -y
+yum install -y nginx
 echo "server {" | sudo tee $NGINX_CONF > /dev/null 
 echo "    listen       80;" | sudo tee -a $NGINX_CONF > /dev/null
 echo "    server_name  localhost;" | sudo tee -a $NGINX_CONF > /dev/null

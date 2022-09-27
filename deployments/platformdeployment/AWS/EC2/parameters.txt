@@ -1,0 +1,6 @@
+{
+  "Parameters": {
+    "InstanceType": "m5.large",
+    "KeyName": "max-us-west-2"
+  }
+}

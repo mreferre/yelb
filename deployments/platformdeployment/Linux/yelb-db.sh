@@ -19,12 +19,13 @@ cd $HOMEDIR
 yum -y install postgresql postgresql-server postgresql-devel postgresql-contrib postgresql-docs
 service postgresql initdb
 #the seds below relaxe the postgres configuration to allow remote connectivity. This trades off security best practices for sake of deployment simplicity
-sed -i "s/#listen_addresses = 'localhost'/listen_addresses = '*'/" /var/lib/pgsql9/data/postgresql.conf
-sed -i "s/#port = 5432/port = 5432/" /var/lib/pgsql9/data/postgresql.conf
-sed -i "s/peer/trust/" /var/lib/pgsql9/data/pg_hba.conf
-sed -i "s/ident/trust/" /var/lib/pgsql9/data/pg_hba.conf
-sed -i "s@host    all             all             127.0.0.1/32@host    all             all             0.0.0.0/0@" /var/lib/pgsql9/data/pg_hba.conf
-service postgresql start
+sed -i "s/#listen_addresses = 'localhost'/listen_addresses = '*'/" /var/lib/pgsql/data/postgresql.conf
+sed -i "s/#port = 5432/port = 5432/" /var/lib/pgsql/data/postgresql.conf
+sed -i "s/peer/trust/" /var/lib/pgsql/data/pg_hba.conf
+sed -i "s/ident/trust/" /var/lib/pgsql/data/pg_hba.conf
+sed -i "s@host    all             all             127.0.0.1/32@host    all             all             0.0.0.0/0@" /var/lib/pgsql/data/pg_hba.conf
+systemctl enable postgresql
+systemctl start postgresql
 psql -v ON_ERROR_STOP=1 --username postgres <<-EOSQL
     CREATE DATABASE yelbdatabase;
     \connect yelbdatabase;
