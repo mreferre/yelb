@@ -96,7 +96,8 @@ ng build --environment=prod --output-path=/custom/dist/
 
 cd $HOMEDIR
 cd yelb/yelb-ui
-sudo yum install -y nginx
+amazon-linux-extras install epel -y
+yum install -y nginx
 echo "server {" | sudo tee $NGINX_CONF > /dev/null 
 echo "    listen       80;" | sudo tee -a $NGINX_CONF > /dev/null
 echo "    server_name  localhost;" | sudo tee -a $NGINX_CONF > /dev/null

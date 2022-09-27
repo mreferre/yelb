@@ -1,7 +1,7 @@
 {
   "AWSTemplateFormatVersion" : "2010-09-09",
 
-  "Description" : "Yelb single server: Create a Yelb stack using multiple EC2 instances. This sample template only works in selected regions. This has been tested on the default VPC with Public Subnets.",
+  "Description" : "Yelb distributed deployment: Create a Yelb stack using multiple EC2 instances. This sample template only works in selected regions. This has been tested on the default VPC with Public Subnets.",
 
   "Parameters" : {
     "KeyName": {
