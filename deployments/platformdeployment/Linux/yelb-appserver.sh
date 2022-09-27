@@ -37,16 +37,16 @@ echo "AWS_REGION = " $AWS_REGION
 
 cd $HOMEDIR
 yum update -y
-yum install -y ruby23
-alternatives --set ruby /usr/bin/ruby2.3
+amazon-linux-extras install epel -y
+amazon-linux-extras install ruby2.6 -y
 yum install -y postgresql
-yum install -y ruby23-devel
+yum install -y ruby-devel
 yum install -y gcc
 yum install -y postgresql-devel
-gem install pg --no-ri --no-rdoc
-gem install redis --no-ri --no-rdoc
-gem install sinatra --no-ri --no-rdoc
-gem install aws-sdk-dynamodb --no-ri --no-rdoc
+gem install pg -v 1.2.2 --no-document
+gem install redis --no-document
+gem install sinatra --no-document
+gem install aws-sdk-dynamodb --no-document
 cd ./yelb/yelb-appserver
 ruby yelb-appserver.rb -o 0.0.0.0 & 
 
