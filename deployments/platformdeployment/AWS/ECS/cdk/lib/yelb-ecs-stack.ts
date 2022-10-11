@@ -82,7 +82,7 @@ export class YelbEcsStack extends cdk.Stack {
     });
 
     const yelbdbcontainer = yelbdbtaskdef.addContainer("yelb-db-container", {
-      image: ecs.ContainerImage.fromRegistry("mreferre/yelb-db:0.5"), 
+      image: ecs.ContainerImage.fromRegistry("mreferre/yelb-db:0.6"),
     })
 
     // Create a standard Fargate service 

@@ -32,7 +32,7 @@ services:
       restart_policy:
         condition: on-failure
   yelb-db:
-    image: 'mreferre/yelb-db:0.5'
+    image: 'mreferre/yelb-db:0.6'
     networks:
       - yelb-network
     deploy:

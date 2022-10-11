@@ -27,7 +27,7 @@ services:
     # - redisdata:/data
 
   yelb-db:
-    image: mreferre/yelb-db:0.5
+    image: mreferre/yelb-db:0.6
     networks:
       - yelb-network
     # uncomment the following lines if you want to persist postgres data across deployments

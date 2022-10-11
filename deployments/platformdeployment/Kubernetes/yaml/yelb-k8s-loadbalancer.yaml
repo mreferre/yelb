@@ -123,7 +123,7 @@ spec:
     spec:
       containers:
       - name: yelb-db
-        image:  mreferre/yelb-db:0.5
+        image:  mreferre/yelb-db:0.6
         ports:
         - containerPort: 5432
 ---

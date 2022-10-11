@@ -81,7 +81,7 @@ Resources:
             ContainerDefinitions:
                 - Name: yelb-db
                   Essential: true
-                  Image: mreferre/yelb-db:0.5
+                  Image: mreferre/yelb-db:0.6
                   LogConfiguration:
                     LogDriver: awslogs
                     Options:

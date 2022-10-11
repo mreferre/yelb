@@ -100,7 +100,7 @@ export class YelbCdk8s extends Chart {
             containers: [
               {
                 name: 'yelb-db',
-                image: 'mreferre/yelb-db:0.5'
+                image: 'mreferre/yelb-db:0.6'
               }
             ]
           }
