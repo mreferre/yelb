@@ -27,11 +27,12 @@ disable :protection
 # if you choose 'custom' with RACK_ENV, all systems variables in the section need to be set before launching the yelb-appserver application
 # the DDB/Region variables in test/development are there for convenience (there is no logic to avoid exceptions when reading these variables) 
 # there is no expectations to be able to use DDB for test/dev 
+# Conditionally get hosts from ENV. Ex. in awsvpc networking mode containers can use localhost to talk to each other inside same task
  
 configure :production do
-  set :redishost, "redis-server"
+  set :redishost, ENV['CACHE_HOST'].nil? ? "redis-server" : ENV['CACHE_HOST']
   set :port, 4567
-  set :yelbdbhost => "yelb-db"
+  set :yelbdbhost => ENV['DB_HOST'].nil? ? "yelb-db" : ENV['DB_HOST']
   set :yelbdbport => 5432
   set :yelbddbrestaurants => ENV['YELB_DDB_RESTAURANTS']
   set :yelbddbcache => ENV['YELB_DDB_CACHE']
