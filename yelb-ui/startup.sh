@@ -2,6 +2,8 @@
 NGINX_CONF=/etc/nginx/conf.d/default.conf
 cd clarity-seed
 
+if [ -z "$YELB_APPSERVER_ENDPOINT" ]; then YELB_APPSERVER_ENDPOINT="yelb-appserver"; fi 
+
 # when the variable is populated a search domain entry is added to resolv.conf at startup
 # this is needed for the ECS service discovery given the app works by calling host names and not FQDNs
 # a search domain can't be added to the container when using the awsvpc mode 
@@ -15,7 +17,7 @@ sed -i -- 's#/usr/share/nginx/html#/clarity-seed/'$UI_ENV'/dist#g' $NGINX_CONF
 if ! grep -q "location /api" "$NGINX_CONF"; then
     eval "cat <<EOF
     location /api {
-        proxy_pass http://yelb-appserver:4567/api;
+        proxy_pass http://"$YELB_APPSERVER_ENDPOINT":4567/api;
         proxy_http_version 1.1;
     }
     gzip on;
