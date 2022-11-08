@@ -197,7 +197,7 @@ Resources:
             ContainerDefinitions:
                 - Name: yelb-ui
                   Essential: true
-                  Image: mreferre/yelb-ui:0.8
+                  Image: mreferre/yelb-ui:0.9
                   Environment: 
                     - Name: SEARCH_DOMAIN
                       Value: !Ref 'Domain' 
