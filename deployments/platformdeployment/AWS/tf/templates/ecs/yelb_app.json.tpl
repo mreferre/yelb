@@ -14,19 +14,19 @@
     },
     "environment": [
       {
-         "name": "SEARCH_DOMAIN",
-         "value": "${domain_name}"
+         "name": "RACK_ENV",
+         "value": "custom"
       },
       {
-         "name": "APPSERVER_HOST",
+         "name": "YELB_APPSERVER_ENDPOINT",
          "value": "localhost"
       },
       {
-         "name": "CACHE_HOST",
+         "name": "REDIS_SERVER_ENDPOINT",
          "value": "localhost"
       },
       {
-         "name": "DB_HOST",
+         "name": "YELB_DB_SERVER_ENDPOINT",
          "value": "localhost"
       }
     ],
