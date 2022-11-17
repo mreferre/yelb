@@ -8,7 +8,8 @@ data "template_file" "app_ui_name" {
   template = file("./templates/ecs/${var.app_name}_app.json.tpl")
 
   vars = {
-    app_image      = "${local.aws_account}.dkr.ecr.${local.aws_region}.amazonaws.com/${var.app_ui_name}:latest"
+#    app_image      = "${local.aws_account}.dkr.ecr.${local.aws_region}.amazonaws.com/${var.app_ui_name}:latest"
+    app_image      = "mreferre/yelb-ui:0.9"
     app_port       = var.app_port
     fargate_cpu    = var.fargate_cpu / 4
     fargate_memory = var.fargate_memory
@@ -24,7 +25,8 @@ data "template_file" "app_server_name" {
   template = file("./templates/ecs/${var.app_name}_app.json.tpl")
 
   vars = {
-    app_image      = "${local.aws_account}.dkr.ecr.${local.aws_region}.amazonaws.com/${var.app_server_name}:latest"
+#    app_image      = "${local.aws_account}.dkr.ecr.${local.aws_region}.amazonaws.com/${var.app_server_name}:latest"
+    app_image      = "mreferre/yelb-appserver:0.6"
     fargate_cpu    = var.fargate_cpu / 4
     fargate_memory = var.fargate_memory
     aws_region     = local.aws_region
@@ -39,7 +41,8 @@ data "template_file" "app_cache_name" {
   template = file("./templates/ecs/${var.app_name}_app.json.tpl")
 
   vars = {
-    app_image      = "${local.aws_account}.dkr.ecr.${local.aws_region}.amazonaws.com/${var.app_cache_name}:latest"
+    # app_image      = "${local.aws_account}.dkr.ecr.${local.aws_region}.amazonaws.com/${var.app_cache_name}:latest"
+    app_image      = "redis:4.0.2"
     fargate_cpu    = var.fargate_cpu / 4
     fargate_memory = var.fargate_memory
     aws_region     = local.aws_region
@@ -54,7 +57,8 @@ data "template_file" "app_db_name" {
   template = file("./templates/ecs/${var.app_name}_app.json.tpl")
 
   vars = {
-    app_image      = "${local.aws_account}.dkr.ecr.${local.aws_region}.amazonaws.com/${var.app_db_name}:latest"
+    # app_image      = "${local.aws_account}.dkr.ecr.${local.aws_region}.amazonaws.com/${var.app_db_name}:latest"
+    app_image      = "mreferre/yelb-appserver:0.6"
     fargate_cpu    = var.fargate_cpu / 4
     fargate_memory = var.fargate_memory
     aws_region     = local.aws_region

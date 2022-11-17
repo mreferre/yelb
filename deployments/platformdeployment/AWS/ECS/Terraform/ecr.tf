@@ -1,3 +1,6 @@
+#If you want to use ECR repository instead docker repository you can uncomment this file 
+#Also make sure to change image url in ecs.tf accordingly
+/*
 resource "aws_ecr_repository" "app-ui" {
   name                 = var.app_ui_name
   image_tag_mutability = "MUTABLE"
@@ -37,3 +40,4 @@ resource "aws_ecr_repository_policy" "app-db-repo-policy" {
   repository = aws_ecr_repository.app-db.name
   policy     = var.repository_policy
 }
+*/
