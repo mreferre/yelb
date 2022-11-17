@@ -8,10 +8,9 @@
 - No nameserver needed
 - CloudWatch logs
 
-NOTE: Check container id's and versions first!
-I have fetched container from docker registry and made local changes to it.
+NOTE: Check container id's and versions first! If they have changed then update ecs.tf.
 
-Using "RACK_ENV=custom" we can define hosts from servers.
+Using "RACK_ENV=custom" we can define hosts for servers.
 AWSVPC networking allows the containers inside same task to talk each other via localhost, so
 we can set localhost to them using ENV variables.
 This is already done in templates/yelb_app.json.tpl.
