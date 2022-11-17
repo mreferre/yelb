@@ -36,7 +36,6 @@ When you want to destroy your AWS setup run `terraform destroy`.
 
 Terraform keeps the state of your deployment in a file called `terraform.tfstate` and `terraform.lock.hcl` which will appear after `apply` command. So keep these files locally around.
 
-```
 #### Updating new version
 
 You can force ECS to update service from images
@@ -44,7 +43,5 @@ You can force ECS to update service from images
 ```
 
 aws ecs update-service --cluster yelb-cluster --service yelb-ui-service --force-new-deployment
-
-```
 
 ```
