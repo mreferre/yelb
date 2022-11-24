@@ -34,7 +34,7 @@ export class YelbCdk8s extends Chart {
             containers: [
               {
                 name: 'yelb-ui-container',
-                image: 'mreferre/yelb-ui:0.9',
+                image: 'mreferre/yelb-ui:0.10',
                 ports: [ { containerPort: 80 } ]
               }
             ]

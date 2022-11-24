@@ -61,7 +61,7 @@ spec:
     spec:
       containers:
       - name: yelb-ui
-        image: mreferre/yelb-ui:0.9
+        image: mreferre/yelb-ui:0.10
         ports:
         - containerPort: 80
           hostPort: 32777 # depending on the minikube driver you use you may be able to even use 80. But something above 32000 seems safer 
