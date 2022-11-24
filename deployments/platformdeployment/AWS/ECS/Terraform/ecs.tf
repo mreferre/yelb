@@ -9,7 +9,7 @@ data "template_file" "app_ui_name" {
 
   vars = {
 #    app_image      = "${local.aws_account}.dkr.ecr.${local.aws_region}.amazonaws.com/${var.app_ui_name}:latest"
-    app_image      = "mreferre/yelb-ui:0.9"
+    app_image      = "mreferre/yelb-ui:0.10"
     app_port       = var.app_port
     fargate_cpu    = var.fargate_cpu / 4
     fargate_memory = var.fargate_memory

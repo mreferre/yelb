@@ -4,16 +4,14 @@
 - One service
 - One task with all containers
 - Only public endpoint is the ALB
-- Communicates via awsvpc networking using localhost only (fast and secure)
+- Communicates via AWS VPC networking using localhost only (fast and secure)
 - No nameserver needed
 - CloudWatch logs
 
-NOTE: Check container id's and versions first! If they have changed then update ecs.tf.
+NOTE: Container images tags are specified in ecs.tf and are (ideally) kept up to date.
 
-Using "RACK_ENV=custom" we can define hosts for servers.
-AWSVPC networking allows the containers inside same task to talk each other via localhost, so
-we can set localhost to them using ENV variables.
-This is already done in templates/yelb_app.json.tpl.
+Using "RACK_ENV=custom" we can specify custom endpoints for the Postgres database and the Redis server.
+AWS VPC networking allows the containers inside same task to talk each other via `localhost` (which is what we set the Postgres and Redis endpoint variables to). This is done in the `./templates/ecs/yelb_app.json.tpl` file.
 
 ### AWS region
 
@@ -28,20 +26,10 @@ region = eu-central-1
 ### Terraform init
 
 Use `terraform init` once, it will create terraform working environment here.
-To apply changes to AWS use `terraform apply`. It will print changes it is going to make to cloud and prompts for your confirmation. If making changes just run apply again.
+To apply the changes use `terraform apply`. It will print changes it is going to make to cloud and prompts for your confirmation. If you are making further changes just run apply again.
 
-When its done it outputs our loadbalancer URL which we can use to start application in browser.
+When it's done it outputs our load balancer URL which we can use to test the application in the browser.
 
 When you want to destroy your AWS setup run `terraform destroy`.
 
 Terraform keeps the state of your deployment in a file called `terraform.tfstate` and `terraform.lock.hcl` which will appear after `apply` command. So keep these files locally around.
-
-#### Updating new version
-
-You can force ECS to update service from images
-
-```
-
-aws ecs update-service --cluster yelb-cluster --service yelb-ui-service --force-new-deployment
-
-```

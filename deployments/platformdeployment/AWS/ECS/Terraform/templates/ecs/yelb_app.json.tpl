@@ -19,7 +19,7 @@
       },
       {
          "name": "YELB_APPSERVER_ENDPOINT",
-         "value": "localhost"
+         "value": "http://localhost:4567"
       },
       {
          "name": "REDIS_SERVER_ENDPOINT",
