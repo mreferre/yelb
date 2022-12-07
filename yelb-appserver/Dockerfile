@@ -6,7 +6,7 @@ MAINTAINER massimo@it20.info
 # Set the working directory to /app
 WORKDIR /app
 
-COPY yelb-appserver.rb yelb-appserver.rb 
+COPY *.rb ./
 COPY Gemfile Gemfile
 COPY modules modules
 
@@ -26,6 +26,14 @@ RUN gem install aws-sdk-dynamodb pg --no-document
 # Set the working directory to /
 WORKDIR /
 ADD startup.sh startup.sh
+
+# Lambda adapter
+COPY --from=public.ecr.aws/awsguru/aws-lambda-adapter:0.5.1 /lambda-adapter /lambda-adapter
+
+# Setup Lambda RIE + RIC
+RUN curl -L -o /usr/bin/lambda_rie https://github.com/aws/aws-lambda-runtime-interface-emulator/releases/download/v1.9/aws-lambda-rie-x86_64
+RUN chmod +x /usr/bin/lambda_rie
+RUN gem install aws_lambda_ric
 
 ##################### INSTALLATION END #####################
 

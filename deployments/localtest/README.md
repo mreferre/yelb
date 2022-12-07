@@ -8,7 +8,7 @@ You can either `docker-compose up` the yaml file provided in this folder or, alt
 docker network create yelb-network 
 docker run --name redis-server -p 6379:6379 --network=yelb-network -d redis:4.0.2
 docker run --name yelb-db -p 5432:5432 --network=yelb-network -d mreferre/yelb-db:0.6
-docker run --name yelb-appserver --network=yelb-network -d -p 4567:4567 -e RACK_ENV=test mreferre/yelb-appserver:0.6
+docker run --name yelb-appserver --network=yelb-network -d -p 4567:4567 -e RACK_ENV=test mreferre/yelb-appserver:0.7
 docker run --name yelb-ui --network=yelb-network -d -p 8080:80 -e UI_ENV=test mreferre/yelb-ui:0.10
 ```
 You should now be able to see the application running by connecting your browser to: http://localhost:8080

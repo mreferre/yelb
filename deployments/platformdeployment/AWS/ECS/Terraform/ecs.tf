@@ -26,7 +26,7 @@ data "template_file" "app_server_name" {
 
   vars = {
 #    app_image      = "${local.aws_account}.dkr.ecr.${local.aws_region}.amazonaws.com/${var.app_server_name}:latest"
-    app_image      = "mreferre/yelb-appserver:0.6"
+    app_image      = "mreferre/yelb-appserver:0.7"
     fargate_cpu    = var.fargate_cpu / 4
     fargate_memory = var.fargate_memory
     aws_region     = local.aws_region

@@ -77,7 +77,7 @@ spec:
     spec:
       containers:
       - name: {{ template "yelb.fullname" . }}-appserver
-        image:  mreferre/yelb-appserver:0.6
+        image:  mreferre/yelb-appserver:0.7
         ports:
         - containerPort: 4567
         env:

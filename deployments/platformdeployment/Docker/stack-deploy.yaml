@@ -13,7 +13,7 @@ services:
       restart_policy:
         condition: on-failure
   yelb-appserver:
-    image: 'mreferre/yelb-appserver:0.6'
+    image: 'mreferre/yelb-appserver:0.7'
     depends_on:
       - redis-server
       - yelb-db
