@@ -17,7 +17,7 @@ export yelbappendpoint="https://"$apigwid".execute-api.us-west-2.amazonaws.com"
 mkdir tmp-$apigwid
 
 # Downloading the source web site + customization to point to the CF stack 
-aws s3 cp s3://yelb-ui-serverless ./tmp-$apigwid --recursive 
+aws s3 cp s3://yelb-ui-s3 ./tmp-$apigwid --recursive 
 sed -i "s@https://yelb-appserver-endpoint-whatever-that-is.com@$yelbappendpoint@g" ./tmp-$apigwid/env.js 
 
 # Creating the S3 web hosting bucket 
@@ -39,6 +39,8 @@ aws s3api put-bucket-policy --bucket yelb-ui-$apigwid --policy file://./tmp-$api
 
 # Copying the web site to the web hosting bucket
 aws s3 cp ./tmp-$apigwid s3://yelb-ui-$apigwid/ --recursive
+
+rm -r ./tmp-$apigwid
 
 # Link to the web hosting bucket
 echo "///"

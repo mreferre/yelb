@@ -201,7 +201,7 @@ Resources:
     Type: AWS::Serverless::Function
     DependsOn: yelbddbrestaurants
     Properties:
-      CodeUri: s3://yelb-appserver-serverless/yelb-appserver-serverless.zip
+      CodeUri: s3://yelb-appserver-lambda/yelb-appserver-lambda.zip
       Handler: getvotes_adapter.getvotes_adapter
       Runtime: ruby2.7
       Role: !GetAtt DDBLambdaRole.Arn
@@ -224,7 +224,7 @@ Resources:
     Type: AWS::Serverless::Function
     DependsOn: yelbddbcache
     Properties:
-      CodeUri: s3://yelb-appserver-serverless/yelb-appserver-serverless.zip
+      CodeUri: s3://yelb-appserver-lambda/yelb-appserver-lambda.zip
       Handler: getstats_adapter.getstats_adapter
       Runtime: ruby2.7
       Role: !GetAtt DDBLambdaRole.Arn
@@ -247,7 +247,7 @@ Resources:
     Type: AWS::Serverless::Function
     DependsOn: yelbddbrestaurants
     Properties:
-      CodeUri: s3://yelb-appserver-serverless/yelb-appserver-serverless.zip
+      CodeUri: s3://yelb-appserver-lambda/yelb-appserver-lambda.zip
       Handler: hostname_adapter.hostname_adapter
       Runtime: ruby2.7
       Role: !GetAtt DDBLambdaRole.Arn
@@ -270,7 +270,7 @@ Resources:
     Type: AWS::Serverless::Function
     DependsOn: yelbddbcache
     Properties:
-      CodeUri: s3://yelb-appserver-serverless/yelb-appserver-serverless.zip
+      CodeUri: s3://yelb-appserver-lambda/yelb-appserver-lambda.zip
       Handler: pageviews_adapter.pageviews_adapter
       Runtime: ruby2.7
       Role: !GetAtt DDBLambdaRole.Arn
@@ -293,7 +293,7 @@ Resources:
     Type: AWS::Serverless::Function
     DependsOn: yelbddbrestaurants
     Properties:
-      CodeUri: s3://yelb-appserver-serverless/yelb-appserver-serverless.zip
+      CodeUri: s3://yelb-appserver-lambda/yelb-appserver-lambda.zip
       Handler: restaurant_adapter.restaurant_adapter
       Runtime: ruby2.7
       Role: !GetAtt DDBLambdaRole.Arn

@@ -10,8 +10,8 @@ The script runs a CF template (`deploy-yelb-lambda-ddb.yaml`) that stands up the
 
 Ideally (and ambitionally), this script should be turned into a single CDK template that does all of this. 
 
-The artifact for the Lambdas is available here: `s3://yelb-appserver-serverless/yelb-appserver-serverless.zip`.
-The artifact for the S3 site is available here: `s3://yelb-ui-serverless`.
+The artifact for the Lambdas is available here: `s3://yelb-appserver-lambda/yelb-appserver-lambda.zip`.
+The artifact for the S3 site is available here: `s3://yelb-ui-lambda`.
 
 These artifacts are created using build stages that are executed manually and that refresh that content. 
 
