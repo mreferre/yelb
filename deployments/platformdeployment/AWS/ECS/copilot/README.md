@@ -6,7 +6,7 @@ This folder contains the pre-created manifests. When Copilot detects that a serv
 
 > For example, the environment manifest in the `envioronments/yelb-env` folder has been tweaked from the default to enable Container Insights. More importantly, the `yelb-appserver` and `yelb-ui` manifests have a variable that needs to be injected for service discovery to work properly (more info [here on how Copilot service discovery](https://aws.github.io/copilot-cli/docs/developing/service-discovery/) works and [here on the application service discovery requirements](https://github.com/mreferre/yelb/blob/master/yelb-appserver/startup.sh#L3-L7))
 
-These commands assume you have the Copilot tool installed and you have an AWS CLI profile called `default` already created. Make sure you are running these commands from the `/deployments/platformdeployment/AWS/ECS` folder because the copilot binary will look for a `copilot` folder.
+These commands assume you have the Copilot tool installed and you have an AWS CLI profile called `default` already created. Make sure you are running these commands from the `/deployments/platformdeployment/AWS/ECS/copilot` directory.
 
 First initialize the app with this command (the app name - `yelb` - is specified in the `.workspace` file distributed with this repo so copilot won't ask for it):
 ```
@@ -21,9 +21,9 @@ copilot env init --name yelb-env --default-config --profile default
 At this point we are ready to register the 4 services that comprise the application. Similarly to what we have done for the environment, we are initializing them with the commands below and copilot will detect the existing manifest files:  
 ```
 copilot svc init --app yelb --name redis-server --image redis:4.0.2 --svc-type "Backend Service" 
-copilot svc init --app yelb --name yelb-db --dockerfile ../../../../yelb-db/Dockerfile --svc-type "Backend Service" 
-copilot svc init --app yelb --name yelb-appserver --dockerfile ../../../../yelb-appserver/Dockerfile --svc-type "Backend Service" 
-copilot svc init --app yelb --name yelb-ui --dockerfile ../../../../yelb-ui/Dockerfile --svc-type "Load Balanced Web Service" --port 80
+copilot svc init --app yelb --name yelb-db --dockerfile ../../../../../yelb-db/Dockerfile --svc-type "Backend Service"
+copilot svc init --app yelb --name yelb-appserver --dockerfile ../../../../../yelb-appserver/Dockerfile --svc-type "Backend Service"
+copilot svc init --app yelb --name yelb-ui --dockerfile ../../../../../yelb-ui/Dockerfile --svc-type "Load Balanced Web Service" --port 80
 ```
 > Copilot supports both pointing to a `Dockerfile` or to an existing container image. Here we opted for the former, if you want to speed up the deployment you can change this to point to the existing images (check the other IaC files in this repo for the latest images available). Also note that the source of truth in this workflow is the manifest file for each of the services (the command line above has been filled for educational purposes only but the flags will be ignored because the manifests exist already).   
 
