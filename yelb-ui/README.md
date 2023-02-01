@@ -1,12 +1,58 @@
-This is the user interface module. It's an Angular2 application that uses the VMware open source [Clarity framework](https://clarity.design/).
 
-The way this works may be a bit cumbersome. I basically clone the Clarity seed, I check out a specific commit (one that I have tested) and then copy/replace the files that are in the directory `clarity-seed-newfiles`. These files are both code and configuration of my app. You can look at the mechanics of how this happens either in the `Dockerfile` in this directory or in the `yelb-ui.sh` script in the `deployments/platformdeployment/Linux` directory. 
+# Welcome to your CDK Python project!
 
-Depending on the deployment model being used, the compiling of the Angular2 application happens at different times. 
+This is a blank project for CDK development with Python.
 
-For the EC2 deployment model, the UI gets compiled at deployment time via running the setup via cloud-init scripts. This is why the app may take a while to become available even though the CFN stack says it's all green and good. The instance where the UI is deployed takes about 5 minutes (or more depending on the instance type) to compile everything and start vending the javascript code. 
+The `cdk.json` file tells the CDK Toolkit how to execute your app.
 
-For the container deployment model, the UI gets compiled at container image build time. This actually uses a two phase build where the resulting javascript code is copied into a brand new image based off of the `nginx` official image. Check out the Dockerfile to see how that works. 
+This project is set up like a standard Python project.  The initialization
+process also creates a virtualenv within this project, stored under the `.venv`
+directory.  To create the virtualenv it assumes that there is a `python3`
+(or `python` for Windows) executable in your path with access to the `venv`
+package. If for any reason the automatic creation of the virtualenv fails,
+you can create the virtualenv manually.
 
-For the serverless Lambda deployment model the UI gets compiled once and pushed to an S3 bucket. This (public) bucket is then used as a source for deploying a new bucket that vends the code to the browser that makes the request. This requires an additional tweak because by default the application is configured to use the IP/FQDN of the UI web server to make the application API calls. This works fine for the EC2 and container deployments because the nginx will act as a proxy but in this case the UI needs to be pre-configured with the end-point of the API Gateway that makes available the API calls (which in turns call the Lambdas). Check out the serverless deployment model for more details on how that tweak works. 
+To manually create a virtualenv on MacOS and Linux:
 
+```
+$ python3 -m venv .venv
+```
+
+After the init process completes and the virtualenv is created, you can use the following
+step to activate your virtualenv.
+
+```
+$ source .venv/bin/activate
+```
+
+If you are a Windows platform, you would activate the virtualenv like this:
+
+```
+% .venv\Scripts\activate.bat
+```
+
+Once the virtualenv is activated, you can install the required dependencies.
+
+```
+$ pip install -r requirements.txt
+```
+
+At this point you can now synthesize the CloudFormation template for this code.
+
+```
+$ cdk synth
+```
+
+To add additional dependencies, for example other CDK libraries, just add
+them to your `setup.py` file and rerun the `pip install -r requirements.txt`
+command.
+
+## Useful commands
+
+ * `cdk ls`          list all stacks in the app
+ * `cdk synth`       emits the synthesized CloudFormation template
+ * `cdk deploy`      deploy this stack to your default AWS account/region
+ * `cdk diff`        compare deployed stack with current state
+ * `cdk docs`        open CDK documentation
+
+Enjoy!

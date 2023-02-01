@@ -1,0 +1,5 @@
+{
+    "devDependencies": {
+        "aws-cdk": "2.61.1"
+    }
+}

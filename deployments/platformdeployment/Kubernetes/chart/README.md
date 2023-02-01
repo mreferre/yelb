@@ -1,1 +1,0 @@
-These configurations have been lightly tested. 
