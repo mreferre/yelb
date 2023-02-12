@@ -33,3 +33,6 @@ node_modules/
 
 # pyenv
 .python-version
+
+# Generated code
+generated/
