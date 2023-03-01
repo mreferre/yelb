@@ -1,7 +1,8 @@
 #!/usr/bin/env node
-import 'source-map-support/register';
-import * as cdk from '@aws-cdk/core';
+import { Construct } from 'constructs';
+import { App, Stack } from 'aws-cdk-lib';                 // core constructs
+
 import { YelbEcsStack } from '../lib/yelb-ecs-stack';
 
-const app = new cdk.App();
+const app = new App();
 new YelbEcsStack(app, 'YelbEcsStack');
