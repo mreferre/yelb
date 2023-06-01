@@ -7,7 +7,7 @@ jobs:
       - checkout
       - run:
           name: Serve docker-compose.yaml
-          command: scp docker-compose.yaml $SSH_USER@SSH_HOST:/home/ubuntu/docker-compose.yaml
+          command: scp docker-compose.yaml $SSH_USER@52.8.186.188:/home/ubuntu/docker-compose.yaml
       
       - run:
           name: Deploy over SSH
