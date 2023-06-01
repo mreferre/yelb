@@ -7,7 +7,7 @@ jobs:
       - checkout
       - run:
           name: Deploy over SSH
-          command: ssh $SSH_USER@$SSH_HOST "echo 'hi'"
+          command: ssh $SSH_USER@$SSH_HOST "touch hi.txt"
 
 workflows:
   version: 2
