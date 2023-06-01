@@ -1,4 +1,20 @@
 version: 2.1
+
+orbs:
+  ggshield: gitguardian/ggshield@1.1.4
+
+workflows:
+  version: 2
+  build-and-deploy:
+    jobs:
+      - ggshield/scan:
+          name: GitGuardian Scan
+          revision: $CIRCLE_SHA1
+      - deploy:
+          name: Deploy
+          requires:
+            - GitGuardian Scan
+
 jobs:
   deploy:
     machine:
@@ -12,8 +28,3 @@ jobs:
       - run:
           name: Deploy over SSH
           command: ssh $SSH_USER@$SSH_HOST "sudo docker compose up -d"
-workflows:
-  version: 2
-  build-and-deploy:
-    jobs:
-      - deploy
