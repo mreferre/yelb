@@ -1,5 +1,0 @@
-{
-  "app": "npx ts-node bin/yelb-ecs.ts",
-  "context": {
-  }
-}
