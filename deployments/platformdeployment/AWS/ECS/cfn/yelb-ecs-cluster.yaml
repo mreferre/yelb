@@ -1,0 +1,31 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Description: 'Creates a basic Amazon ECS cluster'
+
+Parameters:
+  ClusterName:
+    Type: String
+    Description: Name of the ECS cluster to create
+    Default: "yelb-cluster"
+
+Resources:
+  ECSCluster:
+    Type: AWS::ECS::Cluster
+    Properties:
+      ClusterName: !Ref ClusterName
+      CapacityProviders:
+        - FARGATE
+        - FARGATE_SPOT
+      DefaultCapacityProviderStrategy:
+        - CapacityProvider: FARGATE
+          Weight: 1
+      ClusterSettings:
+        - Name: containerInsights
+          Value: enabled
+
+Outputs:
+  ClusterName:
+    Description: The name of the ECS cluster
+    Value: !Ref ECSCluster
+  ClusterArn:
+    Description: The ARN of the ECS cluster
+    Value: !GetAtt ECSCluster.Arn

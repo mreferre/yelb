@@ -8,14 +8,16 @@ Please note that:
 
 These are two CLI examples that work in my environments. 
 
+If you do not have an existing ECS cluster where to deploy into, you can use the `yelb-ecs-cluster.yaml` template in this folder to create one upfront. 
+
 This deploys to FARGATE:
 
 ```
-aws cloudformation create-stack --template-body file://./yelb-cloudformation-ECS-deployment.yaml --parameters ParameterKey=Cluster,ParameterValue="TestCluster" ParameterKey=VPC,ParameterValue="vpc-cfeafcb6" ParameterKey=PublicSubnetOne,ParameterValue="subnet-6a88e013" ParameterKey=PublicSubnetTwo,ParameterValue="subnet-6cc35627" ParameterKey=LaunchType,ParameterValue="FARGATE" ParameterKey=Domain,ParameterValue="yelb.local" ParameterKey=CountOfUiTasks,ParameterValue=2 ParameterKey=CountOfAppserverTasks,ParameterValue=3 ParameterKey=PublicIP,ParameterValue="ENABLED" --capabilities CAPABILITY_IAM --stack-name yelb-fargate --region us-west-2
+aws cloudformation create-stack --template-body file://./yelb-cloudformation-ECS-deployment.yaml --parameters ParameterKey=Cluster,ParameterValue="default" ParameterKey=VPC,ParameterValue="vpc-cfeafcb6" ParameterKey=PublicSubnetOne,ParameterValue="subnet-6a88e013" ParameterKey=PublicSubnetTwo,ParameterValue="subnet-6cc35627" ParameterKey=LaunchType,ParameterValue="FARGATE" ParameterKey=Domain,ParameterValue="yelb.local" ParameterKey=CountOfUiTasks,ParameterValue=2 ParameterKey=CountOfAppserverTasks,ParameterValue=3 ParameterKey=PublicIP,ParameterValue="ENABLED" --capabilities CAPABILITY_IAM --stack-name yelb-fargate --region us-west-2
 ```
 
 This deploys to EC2:
 
 ```
-aws cloudformation create-stack --template-body  file://./yelb-cloudformation-ECS-deployment.yaml --parameters ParameterKey=Cluster,ParameterValue="TestCluster" ParameterKey=VPC,ParameterValue="vpc-cfeafcb6" ParameterKey=PublicSubnetOne,ParameterValue="subnet-6a88e013" ParameterKey=PublicSubnetTwo,ParameterValue="subnet-6cc35627" ParameterKey=LaunchType,ParameterValue="EC2" ParameterKey=Domain,ParameterValue="yelb.local" ParameterKey=CountOfUiTasks,ParameterValue=2 ParameterKey=CountOfAppserverTasks,ParameterValue=3 ParameterKey=PublicIP,ParameterValue="DISABLED" --capabilities CAPABILITY_IAM --stack-name yelb-ec2 --region us-west-2
+aws cloudformation create-stack --template-body  file://./yelb-cloudformation-ECS-deployment.yaml --parameters ParameterKey=Cluster,ParameterValue="default" ParameterKey=VPC,ParameterValue="vpc-cfeafcb6" ParameterKey=PublicSubnetOne,ParameterValue="subnet-6a88e013" ParameterKey=PublicSubnetTwo,ParameterValue="subnet-6cc35627" ParameterKey=LaunchType,ParameterValue="EC2" ParameterKey=Domain,ParameterValue="yelb.local" ParameterKey=CountOfUiTasks,ParameterValue=2 ParameterKey=CountOfAppserverTasks,ParameterValue=3 ParameterKey=PublicIP,ParameterValue="DISABLED" --capabilities CAPABILITY_IAM --stack-name yelb-ec2 --region us-west-2
 ```
